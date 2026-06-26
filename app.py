@@ -1,4 +1,3 @@
-#it is just to test the git
 from flask import Flask, jsonify, request, render_template
 import serial
 import threading
@@ -14,7 +13,6 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import secrets
 
-# API_KEY   = "svr123"
 PICO_PORT = "/dev/ttyACM0"
 PICO_BAUD = 115200
 
