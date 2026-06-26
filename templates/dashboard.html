@@ -1,0 +1,3255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>SVR ROBOTICS SOLAR ENERGY</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* ── Login Screen ── */
+        #login-screen {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+        }
+
+        #login-box {
+            background: white;
+            border-radius: 24px;
+            padding: 40px 35px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+            text-align: center;
+        }
+
+        #login-box img {
+            width: 70px;
+            margin-bottom: 8px;
+        }
+
+        #login-box h2 {
+            font-weight: 800;
+            color: #1a1a2e;
+            font-size: 1.2rem;
+            margin-bottom: 4px;
+        }
+
+        #login-box p {
+            color: #999;
+            font-size: 0.82rem;
+            margin-bottom: 22px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 11px 15px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            outline: none;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+
+        .login-input:focus {
+            border-color: var(--svr-orange);
+        }
+
+        #login-error {
+            color: #e74c3c;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            min-height: 16px;
+            font-weight: 600;
+        }
+
+        #login-attempts {
+            color: #999;
+            font-size: 0.72rem;
+            margin-top: 12px;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 11px;
+            background: var(--svr-orange);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn-login:hover {
+            background: #d97e16;
+        }
+
+        .btn-login:active {
+            transform: scale(0.98);
+        }
+
+        .btn-login:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        #login-screen.shake #login-box {
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0)
+            }
+
+            20% {
+                transform: translateX(-10px)
+            }
+
+            40% {
+                transform: translateX(10px)
+            }
+
+            60% {
+                transform: translateX(-8px)
+            }
+
+            80% {
+                transform: translateX(8px)
+            }
+        }
+
+        :root {
+            --svr-orange: #f39221;
+        }
+
+        body {
+            background: #f0f2f5;
+            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            overflow: hidden;
+            font-size: 13px;
+        }
+
+        /* ── Sidebar ── */
+        #sidebar {
+            width: 190px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: #fff;
+            border-right: 1px solid #e0e0e0;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 5000;
+        }
+
+        #sidebar.open {
+            transform: translateX(0);
+        }
+
+        #overlay {
+            position: fixed;
+            display: none;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2500;
+            cursor: pointer;
+        }
+
+        #overlay.show {
+            display: block;
+        }
+
+        .nav-link {
+            color: #555;
+            font-weight: 500;
+            padding: 14px 20px;
+            border-bottom: 1px solid #f8f9fa;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            font-size: 0.82rem;
+        }
+
+        .nav-link i {
+            width: 22px;
+            font-size: 1rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: #fffaf5;
+            color: var(--svr-orange);
+            border-left: 4px solid var(--svr-orange);
+        }
+
+        /* ── Top Header ── */
+        .top-header {
+            height: 52px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 14px;
+            gap: 8px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .logo-img-header {
+            height: 34px;
+            width: auto;
+        }
+
+        .logo-title {
+            font-weight: 800;
+            font-size: 0.85rem;
+            color: #1a2a3a;
+            white-space: nowrap;
+        }
+
+        /* ── RTC / Mode in header ── */
+        .header-rtc {
+            font-family: monospace;
+            text-align: right;
+            line-height: 1.2;
+        }
+
+        .header-rtc .rtc-time {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .header-rtc .rtc-date {
+            font-size: 0.65rem;
+            color: #999;
+        }
+
+        #mode_badge {
+            font-size: 0.68rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .notification-bell {
+            font-size: 1.2rem;
+            color: #666;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .bell-dot {
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 8px;
+            width: 8px;
+            background: red;
+            border-radius: 50%;
+            border: 1px solid white;
+        }
+
+        /* ── Main View ── */
+        #main-view {
+            padding: 8px;
+            height: calc(100vh - 52px);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* ── Dashboard Sections ── */
+        .dashboard-section {
+            background: white;
+            border-radius: 14px;
+            padding: 14px 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 10px;
+        }
+
+        .section-header {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 12px;
+            padding-bottom: 4px;
+            position: relative;
+            padding-left: 8px;
+        }
+
+        .section-header::before {
+            content: "";
+            position: absolute;
+            left: -4px;
+            top: 1px;
+            height: 12px;
+            width: 3px;
+            background: var(--svr-orange);
+            border-radius: 5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* ── Telemetry Grid ── */
+        .telem-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
+
+        .telem-cell {
+            padding: 10px 8px;
+            text-align: center;
+            border-radius: 10px;
+            border: 1px solid #f0f0f0;
+            background: #fafafa;
+        }
+
+        .telem-cell:hover {
+            background: rgba(243, 146, 33, 0.04);
+        }
+
+        .telem-label {
+            font-size: 0.68rem;
+            color: #999;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .telem-val {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            line-height: 1.1;
+        }
+
+        .telem-sub {
+            font-size: 0.7rem;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .telem-unit {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        /* ── IMU Row ── */
+        .imu-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            margin-top: 8px;
+        }
+
+        .imu-cell {
+            font-size: 0.75rem;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .imu-cell b {
+            display: block;
+            font-size: 0.7rem;
+            margin-bottom: 3px;
+            color: #555;
+        }
+
+        .crosscheck-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-top: 6px;
+            padding-top: 8px;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .crosscheck-cell {
+            font-size: 0.75rem;
+            text-align: center;
+            padding: 6px;
+        }
+
+        .crosscheck-cell b {
+            display: block;
+            font-size: 0.68rem;
+            color: #555;
+            margin-bottom: 2px;
+        }
+
+        /* ── 2D Solar Panel ── */
+        #solar2d-stage {
+            width: 220px;
+            height: 220px;
+            position: relative;
+            overflow: hidden;
+            background: #e8ecf0;
+            border-radius: 50%;
+            border: 1px solid #ccc;
+            flex-shrink: 0;
+        }
+
+        .compass-label {
+            position: absolute;
+            font-size: 10px;
+            font-weight: 700;
+            font-family: monospace;
+        }
+
+        .lbl-N {
+            top: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #e74c3c;
+        }
+
+        .lbl-S {
+            bottom: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #888;
+        }
+
+        .lbl-E {
+            right: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+
+        .lbl-W {
+            left: 6px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+
+        #panel-pivot {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            transition: transform 0.4s ease;
+            transform-origin: center center;
+        }
+
+        #panel-svg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: transform 0.4s ease;
+        }
+
+        #solar2d-pole {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            width: 5px;
+            height: 65px;
+            background: #607d8b;
+            transform: translateX(-50%);
+            border-radius: 3px;
+        }
+
+        #solar2d-shadow {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            height: 3px;
+            background: rgba(0, 0, 0, 0.18);
+            border-radius: 50%;
+            width: 50px;
+            margin-left: -25px;
+            transition: width 0.4s, margin-left 0.4s;
+        }
+
+        .panel-info-bar {
+            display: flex;
+            gap: 20px;
+            font-size: 0.72rem;
+            font-family: monospace;
+            color: #555;
+            background: #f8f9fa;
+            padding: 5px 14px;
+            border-radius: 16px;
+            border: 1px solid #eee;
+            margin-top: 6px;
+        }
+
+        /* ── Status Cards ── */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+        }
+
+        .status-card {
+            padding: 10px 8px;
+            border-radius: 10px;
+            background: #1e1e2f;
+            color: white;
+            text-align: center;
+            font-size: 0.68rem;
+        }
+
+        .led {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin: 0 auto 6px;
+            background: red;
+            box-shadow: 0 0 8px rgba(255, 0, 0, 0.7);
+        }
+
+        /* ── Control Panel ── */
+        .btn-svr {
+            background: var(--svr-orange);
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border: none;
+            font-size: 0.82rem;
+        }
+
+        .btn-svr:hover {
+            background: #d97e16;
+            color: white;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--svr-orange);
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 12px;
+            display: block;
+            font-size: 0.82rem;
+        }
+
+        /* ── Stepper ── */
+        .stepper-box {
+            text-align: center;
+        }
+
+        .stepper-val {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--svr-orange);
+            line-height: 1.1;
+            min-width: 52px;
+            display: inline-block;
+        }
+
+        .stepper-val.year-val {
+            font-size: 1.5rem;
+            min-width: 68px;
+        }
+
+        .stepper-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            background: white;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #555;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 3px auto;
+            transition: border-color 0.2s, color 0.2s;
+        }
+
+        .stepper-btn:hover {
+            border-color: var(--svr-orange);
+            color: var(--svr-orange);
+        }
+
+        .stepper-label {
+            font-size: 0.62rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 2px;
+        }
+
+        .stepper-sep {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #ccc;
+            align-self: center;
+            padding-bottom: 6px;
+        }
+
+        /* ── Performance ── */
+        .val-hero {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .status-led {
+            height: 14px;
+            width: 14px;
+            border-radius: 50%;
+            margin: 8px auto;
+            background: #ccc;
+        }
+
+        /* ── Chart legend dots ── */
+        .chart-legend {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .chart-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .legend-line {
+            width: 18px;
+            height: 3px;
+            border-radius: 2px;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .legend-line.dashed {
+            background: repeating-linear-gradient(90deg,
+                    currentColor 0px,
+                    currentColor 4px,
+                    transparent 4px,
+                    transparent 7px);
+        }
+
+        /* ── Sidebar logo ── */
+        .sidebar-logo-container {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border-bottom: 1px solid #f0f0f0;
+            margin-bottom: 6px;
+        }
+
+        /* ── Splash ── */
+        #splash {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .splash-logo {
+            width: 220px;
+            opacity: 0.2;
+            animation: glowLogo 2.5s ease-in-out forwards;
+        }
+
+        .loading-text {
+            color: #aaa;
+            margin-top: 16px;
+            font-size: 1rem;
+            letter-spacing: 2px;
+        }
+
+        @keyframes glowLogo {
+            0% {
+                opacity: 0.2;
+                transform: scale(0.9);
+                filter: brightness(0.5)
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+                filter: brightness(1.5) drop-shadow(0 0 20px #f39221)
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+                filter: brightness(1)
+            }
+        }
+
+        /* ── Login success ── */
+        #login-success-overlay {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 999999;
+        }
+
+        #login-success-overlay img {
+            width: 220px;
+            opacity: 0;
+            transform: scale(0.85);
+            animation: none;
+        }
+
+        #login-success-overlay .success-text {
+            color: #aaa;
+            margin-top: 16px;
+            font-size: 0.95rem;
+            letter-spacing: 3px;
+            opacity: 0;
+            animation: none;
+            text-transform: uppercase;
+        }
+
+        @keyframes logoReveal {
+            0% {
+                opacity: 0;
+                transform: scale(0.85);
+                filter: brightness(0.3)
+            }
+
+            40% {
+                opacity: 1;
+                transform: scale(1.06);
+                filter: brightness(1.6) drop-shadow(0 0 30px #f39221)
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+                filter: brightness(1)
+            }
+        }
+
+        @keyframes textFadeIn {
+            0% {
+                opacity: 0;
+                letter-spacing: 6px
+            }
+
+            100% {
+                opacity: 1;
+                letter-spacing: 3px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- LOGIN -->
+    <div id="login-screen">
+        <div id="login-box">
+            <img src="static/SVR logo.png" alt="SVR Logo">
+            <h2>SVR ROBOTICS SOLAR ENERGY</h2>
+            <p>Sign in to access the control dashboard</p>
+            <input type="text" id="login_id" class="login-input" placeholder="User ID" autocomplete="username"
+                onkeydown="if(event.key==='Enter') document.getElementById('login_pass').focus()">
+            <input type="password" id="login_pass" class="login-input" placeholder="Password"
+                autocomplete="current-password" onkeydown="if(event.key==='Enter') attemptLogin()">
+            <div id="login-error"></div>
+            <button class="btn-login" id="login-btn" onclick="attemptLogin()">SIGN IN</button>
+            <div id="login-attempts"></div>
+        </div>
+    </div>
+    <div id="login-success-overlay">
+        <img id="success-logo" src="static/SVR logo.png" alt="SVR Logo">
+        <div class="success-text" id="success-text">Initializing Dashboard...</div>
+    </div>
+    <!-- SPLASH -->
+    <div id="splash">
+        <img src="static/SVR logo.png" class="splash-logo" alt="SVR Logo">
+        <div class="loading-text">Initializing System...</div>
+    </div>
+    <!-- SIDEBAR -->
+    <div id="sidebar">
+        <div class="sidebar-logo-container">
+            <img src="static/SVR logo.png" style="width:38px;height:38px;object-fit:contain;margin-right:10px;"
+                alt="SVR">
+            <div><b style="font-size:0.85rem;color:#1a2a3a;">SVR ROBOTICS</b><br>
+                <small
+                    style="font-size:0.6rem;color:#f39221;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;">SOLAR
+                    ENERGY</small>
+            </div>
+        </div>
+        <div class="nav-link active" onclick="switchDash(1,this)"><i class="fa-solid fa-gauge-high"></i> Operational
+            Monitor</div>
+        <div class="nav-link" onclick="switchDash(2,this)"><i class="fa-solid fa-computer"></i> System Status</div>
+        <div class="nav-link" onclick="switchDash(4,this)"><i class="fa-solid fa-gears"></i> Solar Control</div>
+        <div class="nav-link" onclick="switchDash(3,this)"><i class="fa-solid fa-chart-pie"></i> Performance</div>
+        <div class="nav-link" onclick="switchDash(6,this)"><i class="fa-solid fa-warehouse"></i> Storage</div>
+        <div class="nav-link" onclick="switchDash(5,this)"><i class="fa-solid fa-table"></i> LOGS</div>
+    </div>
+    <div id="overlay" onclick="toggleSidebar()"></div>
+    <!-- TOP HEADER -->
+    <div class="top-header">
+        <div class="header-left">
+            <button class="btn btn-light border" onclick="toggleSidebar()"
+                style="font-size:1.1rem;padding:3px 10px;">&#9776;</button>
+            <img src="static/SVR logo.png" class="logo-img-header" alt="SVR Logo">
+            <span class="logo-title">SOLAR THERMAL ENERGY</span>
+        </div>
+        <div class="header-right">
+            <div class="header-rtc">
+                <div class="rtc-time" id="rtc_clock">--:--:--</div>
+                <div class="rtc-date" id="rtc_date_display">----/--/--</div>
+            </div>
+            <span id="mode_badge" class="bg-success text-white">AUTO</span>
+            <div class="dropdown">
+                <div class="notification-bell" data-bs-toggle="dropdown">
+                    <i class="fa-regular fa-bell"></i><span class="bell-dot"></span>
+                </div>
+                <ul class="dropdown-menu dropdown-menu-end shadow p-3" id="notif_menu"
+                    style="width:280px;border-radius:12px;font-size:0.8rem;">
+                    <li class="fw-bold mb-2">Recent Alerts</li>
+                    <li class="small text-muted">No alerts yet</li>
+                </ul>
+            </div>
+            <div class="dropdown">
+                <div class="d-flex align-items-center" style="cursor:pointer;gap:6px;" data-bs-toggle="dropdown">
+                    <img id="header_avatar" src="https://ui-avatars.com/api/?name=user&background=f39221&color=fff"
+                        class="rounded-circle" width="32" alt="avatar">
+                    <div style="line-height:1.2;">
+                        <b id="profile_name" style="font-size:0.8rem;">user</b><br>
+                        <small id="profile_role_sub" class="text-muted" style="font-size:0.68rem;">role</small>
+                    </div>
+                </div>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0"
+                    style="border-radius:12px;font-size:0.8rem;">
+                    <li class="p-3 border-bottom">
+                        <b>Position:</b> <span id="profile_pos">user.pos</span><br>
+                        <b>Email:</b> <span id="profile_email">user.email</span>
+                    </li>
+                    <!-- <li><a class="dropdown-item py-2 text-primary fw-bold" href="#" data-bs-toggle="modal"
+                            data-bs-target="#profileModal">
+                            <i class="fa-solid fa-user-plus me-2"></i> Create Profile
+                        </a>
+                    </li> -->
+                    <li><a class="dropdown-item py-2 text-danger fw-bold" href="#" onclick="logout()">
+                            <i class="fa-solid fa-right-from-bracket me-2"></i> Logout
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- MAIN VIEW -->
+    <div id="main-view">
+        <!-- DASH 1: Operational Monitor -->
+        <div id="dash1" class="dash-view">
+            <h5 class="fw-bold mb-2">Operational Monitor</h5>
+            <div class="dashboard-section">
+                <div class="section-header">Live Telemetry</div>
+                <!-- Row 1: 4 cells -->
+                <div class="telem-grid" style="margin-bottom:6px;">
+                    <div class="telem-cell">
+                        <span class="telem-label">Servo Pulse [Cur/Tar]</span>
+                        <div class="telem-val"><span id="c_pulse">0</span><span style="color:#ccc;font-size:1rem;"> /
+                            </span><span id="t_pulse">0</span></div>
+                    </div>
+                    <div class="telem-cell">
+                        <span class="telem-label">Actuator Pulse [Cur/Tgt]</span>
+                        <div class="telem-val"><span id="act_pulse">0</span><span style="color:#ccc;font-size:1rem;"> /
+                            </span><span id="act_target">0</span></div>
+                    </div>
+                    <div class="telem-cell">
+                        <span class="telem-label">Az / El (Actual)</span>
+                        <div class="telem-val"><span id="az_actual">0.0</span>° <span style="color:#ccc;">|</span> <span
+                                id="el_actual">0.0</span>°</div>
+                        <div class="telem-sub">Calc: <span id="c_az">0.0</span>° / <span id="c_el">0.0</span>°</div>
+                    </div>
+                    <div class="telem-cell" id="wind_card">
+                        <span class="telem-label">Wind Speed</span>
+                        <div class="telem-val" id="w_speed" style="transition:color 0.5s;">0.0</div>
+                        <div class="telem-unit">m/s &nbsp; Limit: <span id="w_limit">0.0</span></div>
+                        <div id="wind_status" class="fw-bold" style="font-size:0.72rem;margin-top:2px;"></div>
+                    </div>
+                </div>
+                <!-- Row 2: 4 cells -->
+                <div class="telem-grid" style="margin-bottom:6px;">
+                    <div class="telem-cell">
+                        <span class="telem-label">GPS (Lat / Lon)</span>
+                        <div style="font-weight:700;font-size:0.95rem;color:#28a745;margin-top:2px;" id="gps_val">
+                            0.0000, 0.0000</div>
+                    </div>
+                    <div class="telem-cell">
+                        <span class="telem-label">Sunrise / Sunset</span>
+                        <div style="font-weight:700;font-size:0.95rem;color:#2196F3;margin-top:2px;" id="day_window">
+                            00:00 / 00:00</div>
+                    </div>
+                    <div class="telem-cell">
+                        <span class="telem-label">DS18B20 Temp</span>
+                        <div class="telem-val"><span id="ds_temp">--</span><span class="telem-unit">°C</span></div>
+                    </div>
+                </div>
+                <!-- Row 3: Thermocouple probes 1-4 -->
+                <div class="telem-grid" style="margin-bottom:6px;">
+                    <div class="telem-cell">
+                        <span class="telem-label">Probe 1 (TC)</span>
+                        <div class="telem-val"><span id="tc_p1">--</span><span class="telem-unit">°C</span></div>
+                    </div>
+                    <div class="telem-cell">
+                        <span class="telem-label">Probe 2 (TC)</span>
+                        <div class="telem-val"><span id="tc_p2">--</span><span class="telem-unit">°C</span></div>
+                    </div>
+                    <div class="telem-cell">
+                        <span class="telem-label">Probe 3 (TC)</span>
+                        <div class="telem-val"><span id="tc_p3">--</span><span class="telem-unit">°C</span></div>
+                    </div>
+                    <div class="telem-cell">
+                        <span class="telem-label">Probe 4 (TC)</span>
+                        <div class="telem-val"><span id="tc_p4">--</span><span class="telem-unit">°C</span></div>
+                    </div>
+                </div>
+                <!-- IMU -->
+                <div
+                    style="font-size:0.7rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">
+                    IMU</div>
+                <div class="imu-grid">
+                    <div class="imu-cell">
+                        <b>Accelerometer (g)</b>
+                        X: <span id="ax">0</span> | Y: <span id="ay">0</span> | Z: <span id="az_imu">0</span>
+                    </div>
+                    <div class="imu-cell">
+                        <b>Gyroscope (°/s)</b>
+                        X: <span id="gx">0</span> | Y: <span id="gy">0</span> | Z: <span id="gz">0</span>
+                    </div>
+                    <div class="imu-cell">
+                        <b>Pitch / Roll / Yaw (°)</b>
+                        P: <span id="pitch">0</span> | R: <span id="roll">0</span> | Y: <span id="yaw">0</span>
+                    </div>
+                </div>
+                <!-- IMU Cross-check -->
+                <div
+                    style="font-size:0.68rem;font-weight:700;color:#bbb;text-transform:uppercase;letter-spacing:1px;margin:6px 0 2px;">
+                    IMU-Panel Cross-Check</div>
+                <div class="crosscheck-grid">
+                    <div class="crosscheck-cell">
+                        <b>EL Diff (solar−IMU)</b>
+                        <span id="imu_el_diff" style="font-size:1rem;font-weight:700;">0.00</span> °
+                        <div id="imu_el_alert_badge" style="display:none;margin-top:3px;">
+                            <span
+                                style="background:#fff3cd;color:#856404;border:1px solid #ffc107;border-radius:6px;font-size:0.65rem;padding:1px 6px;">⚠
+                                Deviation</span>
+                        </div>
+                    </div>
+                    <div class="crosscheck-cell">
+                        <b>AZ Encoder (°)</b>
+                        <span id="imu_enc_az" style="font-size:1rem;font-weight:700;">0.00</span> °
+                    </div>
+                    <div class="crosscheck-cell">
+                        <b>IMU Roll vs Encoder</b>
+                        <span id="imu_vs_enc" style="font-size:1rem;font-weight:700;">0.00</span> °
+                    </div>
+                    <div class="crosscheck-cell">
+                        <b>IMU Status</b>
+                        <span id="imu_status_text" style="font-size:0.9rem;font-weight:700;">--</span>
+                    </div>
+                </div>
+            </div>
+            <!-- 2D Solar Panel -->
+            <div style="display:flex;flex-direction:column;align-items:center;margin-top:6px;gap:6px;">
+                <div id="solar2d-stage">
+                    <span class="compass-label lbl-N">N</span>
+                    <span class="compass-label lbl-S">S</span>
+                    <span class="compass-label lbl-E">E</span>
+                    <span class="compass-label lbl-W">W</span>
+                    <div id="solar2d-pole"></div>
+                    <div id="solar2d-shadow"></div>
+                    <div id="panel-pivot">
+                        <svg id="panel-svg" width="130" height="82" viewBox="0 0 160 100">
+                            <rect x="2" y="2" width="156" height="96" rx="5" fill="#263238" />
+                            <rect x="6" y="6" width="148" height="88" rx="3" fill="#1a237e" />
+                            <line x1="6" y1="36" x2="154" y2="36" stroke="#b0bec5" stroke-width="0.8" />
+                            <line x1="6" y1="64" x2="154" y2="64" stroke="#b0bec5" stroke-width="0.8" />
+                            <line x1="46" y1="6" x2="46" y2="94" stroke="#b0bec5" stroke-width="0.8" />
+                            <line x1="83" y1="6" x2="83" y2="94" stroke="#b0bec5" stroke-width="0.8" />
+                            <line x1="120" y1="6" x2="120" y2="94" stroke="#b0bec5" stroke-width="0.8" />
+                            <rect x="6" y="6" width="60" height="30" rx="2" fill="white" opacity="0.06" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="panel-info-bar">
+                    <span>AZ: <b id="lbl_az3d" style="color:#f39221;">0.0°</b></span>
+                    <span>EL: <b id="lbl_el3d" style="color:#2196F3;">0.0°</b></span>
+                    <span>DIR: <b id="lbl_dir3d" style="color:#333;">N</b></span>
+                </div>
+            </div>
+        </div>
+        <!-- DASH 2: System Status -->
+        <div id="dash2" class="dash-view hidden">
+            <h5 class="fw-bold mb-2">System Status</h5>
+            <div class="dashboard-section">
+                <div class="section-header">Sensors &amp; System Health</div>
+                <div class="status-grid">
+                    <div class="status-card">
+                        <div class="led" id="led_rtc"></div>RTC
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_wind"></div>Wind
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_gps"></div>GPS
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_temp"></div>Temp
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_ds_ok"></div>DS18B20
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_prox_az"></div>AZ Home
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_prox_el"></div>EL Home
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_el_full"></div>EL Full
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_imu_ok"></div>IMU OK
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_imu_alarm"></div>IMU Alarm
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_wind_cool"></div>Wind Cool
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_wind_park_az"></div>Park AZ
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_wind_park_el"></div>Park EL
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_night_park"></div>Night Park
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_synced"></div>Enc Sync
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_ishome"></div>Is Home
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_is_homing"></div>Homing
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_night_done"></div>Night Done
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_moving_home"></div>Mov Home
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_tc_ok"></div>TC OK
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_tc_fault"></div>TC Fault
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_step_az"></div>Step AZ
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_step_el"></div>Step EL
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_az_home_miss"></div>AZ Miss
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_el_home_miss"></div>EL Miss
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_nudge_cnt"></div>Nudge Cnt
+                    </div>
+                    <div class="status-card">
+                        <div class="led" id="led_el_nudge_cnt"></div>EL Nudge
+                    </div>
+                </div>
+                <div class="dashboard-section">
+                    <div class="section-header">Thermocouple Channels (1–9)</div>
+                    <div class="status-grid">
+                        <div class="status-card">
+                            <div class="led" id="led_tc_ch0"></div>Probe 1
+                        </div>
+                        <div class="status-card">
+                            <div class="led" id="led_tc_ch1"></div>Probe 2
+                        </div>
+                        <div class="status-card">
+                            <div class="led" id="led_tc_ch2"></div>Probe 3
+                        </div>
+                        <div class="status-card">
+                            <div class="led" id="led_tc_ch3"></div>Probe 4
+                        </div>
+                        <div class="status-card">
+                            <div class="led" id="led_tc_ch4"></div>Probe 5
+                        </div>
+                        <div class="status-card">
+                            <div class="led" id="led_tc_ch5"></div>Probe 6
+                        </div>
+                        <div class="status-card">
+                            <div class="led" id="led_tc_ch6"></div>Probe 7
+                        </div>
+                        <div class="status-card">
+                            <div class="led" id="led_tc_ch7"></div>Probe 8
+                        </div>
+                        <div class="status-card">
+                            <div class="led" id="led_tc_ch8"></div>Probe 9
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- DASH 3: Performance -->
+        <div id="dash3" class="dash-view hidden">
+            <h5 class="fw-bold mb-2">Thermal Energy Hub</h5>
+            <!-- ── Date range picker ── -->
+            <div class="log-controls" style="margin-bottom:10px;">
+                <label class="small fw-bold mb-0">From:</label>
+                <div style="display:flex;align-items:center;gap:4px;">
+                    <input type="datetime-local" id="chart_from">
+                    <div style="display:flex;flex-direction:column;gap:2px;">
+                        <button onclick="nudgeTime('chart_from',1)"
+                            style="width:22px;height:22px;border:1px solid #ddd;border-radius:5px;background:white;cursor:pointer;font-size:0.7rem;color:#f39221;padding:0;">▲</button>
+                        <button onclick="nudgeTime('chart_from',-1)"
+                            style="width:22px;height:22px;border:1px solid #ddd;border-radius:5px;background:white;cursor:pointer;font-size:0.7rem;color:#f39221;padding:0;">▼</button>
+                    </div>
+                </div>
+                <label class="small fw-bold mb-0">To:</label>
+                <div style="display:flex;align-items:center;gap:4px;">
+                    <input type="datetime-local" id="chart_to">
+                    <div style="display:flex;flex-direction:column;gap:2px;">
+                        <button onclick="nudgeTime('chart_to',1)"
+                            style="width:22px;height:22px;border:1px solid #ddd;border-radius:5px;background:white;cursor:pointer;font-size:0.7rem;color:#f39221;padding:0;">▲</button>
+                        <button onclick="nudgeTime('chart_to',-1)"
+                            style="width:22px;height:22px;border:1px solid #ddd;border-radius:5px;background:white;cursor:pointer;font-size:0.7rem;color:#f39221;padding:0;">▼</button>
+                    </div>
+                </div>
+                <select id="chart_points"
+                    style="font-size:0.78rem;padding:4px 8px;border:1px solid #ddd;border-radius:8px;">
+                    <option value="100">100 pts</option>
+                    <option value="200" selected>200 pts</option>
+                    <option value="500">500 pts</option>
+                    <option value="1000">1000 pts</option>
+                </select>
+                <button class="btn btn-svr btn-sm" onclick="queryCharts()">📈 Plot</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="setChartRange('hour')">1 Hour</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="setChartRange('today')">Today</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="setChartRange('week')">7 Days</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="setChartRange('month')">30 Days</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="setChartRange('live')">▶ Live</button>
+                <span id="chart_info" class="small text-muted ms-2"></span>
+            </div>
+            <div
+                style="overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:16px;">
+                <!-- Temperature Graph -->
+                <div class="dashboard-section">
+                    <div class="section-header">Temperature Graph</div>
+                    <div class="chart-legend">
+                        <div class="chart-legend-item">
+                            <span class="legend-line" style="background:#e74c3c;"></span>Probe 1
+                        </div>
+                        <div class="chart-legend-item">
+                            <span class="legend-line" style="background:#3498db;"></span>Probe 2
+                        </div>
+                        <div class="chart-legend-item">
+                            <span class="legend-line" style="background:#f39221;"></span>Probe 3
+                        </div>
+                        <div class="chart-legend-item">
+                            <span class="legend-line" style="background:#9b59b6;"></span>Probe 4
+                        </div>
+                        <div class="chart-legend-item">
+                            <span class="legend-line" style="background:#27ae60;"></span>DST — DS18B20
+                        </div>
+                    </div>
+                    <canvas id="tempChart" height="110"></canvas>
+                </div>
+                <!-- Position Graph -->
+                <div class="dashboard-section">
+                    <div class="section-header">Position Graph</div>
+                    <div class="chart-legend">
+                        <div class="chart-legend-item">
+                            <span class="legend-line" style="background:#9b59b6;"></span>Target EL (°)
+                        </div>
+                        <div class="chart-legend-item">
+                            <span class="legend-line" style="background:#e74c3c;"></span>Target AZ (°)
+                        </div>
+                        <div class="chart-legend-item">
+                            <span class="legend-line" style="background:#1abc9c;"></span>Actual EL (°)
+                        </div>
+                        <div class="chart-legend-item">
+                            <span class="legend-line" style="background:#f39221;"></span>Actual AZ (°)
+                        </div>
+                    </div>
+                    <canvas id="positionChart" height="110"></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- DASH 4: Solar Control -->
+        <div id="dash4" class="dash-view hidden">
+            <h5 class="fw-bold mb-2">Solar Panel Control</h5>
+            <p class="text-muted mb-3" style="font-size:0.82rem;">Manual controls allow direct intervention. Auto Mode
+                automatically adjusts panels.</p>
+            <div style="display:flex;gap:12px;justify-content:center;margin-bottom:16px;align-items:center;">
+                <button class="btn btn-success btn-sm" id="autoBtn" onclick="requestSetMode('auto')">Auto Mode</button>
+                <button class="btn btn-outline-secondary btn-sm" id="manualBtn"
+                    onclick="requestSetMode('manual')">Manual Mode</button>
+                <span class="text-muted" style="font-size:0.78rem;">Pico: <b id="pico_mode_label">--</b></span>
+            </div>
+            <div id="manualControls" style="display:none;text-align:center;">
+                <div id="manualMenu">
+                    <button onclick="openPanel('rtc')" class="btn btn-svr m-1">Time &amp; Date</button>
+                    <button onclick="openPanel('gps')" class="btn btn-svr m-1">Set Location</button>
+                    <button onclick="openPanel('wind')" class="btn btn-svr m-1">Wind Limit</button>
+                    <button onclick="openPanel('actuator')" class="btn btn-svr m-1">Actuator JOG</button>
+                    <button onclick="openPanel('servo')" class="btn btn-svr m-1">Servo JOG</button>
+                    <button onclick="openPanel('sun')" class="btn btn-svr m-1">Sunrise/Sunset</button>
+                    <button onclick="openPanel('calib')" class="btn btn-svr m-1">Calibration</button>
+                </div>
+                <!-- RTC PANEL -->
+                <div id="panel_rtc" class="hidden">
+                    <button class="back-btn" onclick="goBack()">← Back</button>
+                    <div style="max-width:380px;margin:auto;">
+                        <div class="small fw-bold text-muted text-start mb-2">DATE</div>
+                        <div class="d-flex justify-content-center align-items-center gap-2 mb-3">
+                            <div class="stepper-box">
+                                <button class="stepper-btn" onclick="adjustRTC('day',1)">▲</button>
+                                <div class="stepper-val" id="rtc_day_display">01</div>
+                                <div class="stepper-label">Day</div>
+                                <button class="stepper-btn" onclick="adjustRTC('day',-1)">▼</button>
+                            </div>
+                            <div class="stepper-sep">/</div>
+                            <div class="stepper-box">
+                                <button class="stepper-btn" onclick="adjustRTC('month',1)">▲</button>
+                                <div class="stepper-val" id="rtc_month_display">01</div>
+                                <div class="stepper-label">Month</div>
+                                <button class="stepper-btn" onclick="adjustRTC('month',-1)">▼</button>
+                            </div>
+                            <div class="stepper-sep">/</div>
+                            <div class="stepper-box">
+                                <button class="stepper-btn" onclick="adjustRTC('year',1)">▲</button>
+                                <div class="stepper-val year-val" id="rtc_year_display">2025</div>
+                                <div class="stepper-label">Year</div>
+                                <button class="stepper-btn" onclick="adjustRTC('year',-1)">▼</button>
+                            </div>
+                        </div>
+                        <div class="small fw-bold text-muted text-start mb-2">TIME</div>
+                        <div class="d-flex justify-content-center align-items-center gap-2 mb-3">
+                            <div class="stepper-box">
+                                <button class="stepper-btn" onclick="adjustRTC('hour',1)">▲</button>
+                                <div class="stepper-val" id="rtc_hour_display">00</div>
+                                <div class="stepper-label">Hour</div>
+                                <button class="stepper-btn" onclick="adjustRTC('hour',-1)">▼</button>
+                            </div>
+                            <div class="stepper-sep">:</div>
+                            <div class="stepper-box">
+                                <button class="stepper-btn" onclick="adjustRTC('minute',1)">▲</button>
+                                <div class="stepper-val" id="rtc_minute_display">00</div>
+                                <div class="stepper-label">Min</div>
+                                <button class="stepper-btn" onclick="adjustRTC('minute',-1)">▼</button>
+                            </div>
+                            <div class="stepper-sep">:</div>
+                            <div class="stepper-box">
+                                <button class="stepper-btn" onclick="adjustRTC('second',1)">▲</button>
+                                <div class="stepper-val" id="rtc_second_display">00</div>
+                                <div class="stepper-label">Sec</div>
+                                <button class="stepper-btn" onclick="adjustRTC('second',-1)">▼</button>
+                            </div>
+                        </div>
+                        <input type="hidden" id="rtc_day_val" value="1">
+                        <input type="hidden" id="rtc_month_val" value="1">
+                        <input type="hidden" id="rtc_year_val" value="2025">
+                        <input type="hidden" id="rtc_hour_val" value="0">
+                        <input type="hidden" id="rtc_minute_val" value="0">
+                        <input type="hidden" id="rtc_second_val" value="0">
+                        <button class="btn btn-svr w-100" onclick="setRTC()">Queue RTC</button>
+                    </div>
+                </div>
+                <!-- GPS PANEL -->
+                <div id="panel_gps" class="hidden">
+                    <button class="back-btn" onclick="goBack()">← Back</button>
+                    <input type="number" id="lat_input" placeholder="Latitude" class="form-control mb-1"
+                        style="max-width:280px;margin:auto;">
+                    <input type="number" id="lon_input" placeholder="Longitude" class="form-control mb-2"
+                        style="max-width:280px;margin:auto;">
+                    <label class="small fw-bold">Time Zone</label>
+                    <select id="tz_select" class="form-select mb-2"
+                        style="max-width:280px;margin:auto;font-size:0.8rem;">
+                        <option value="-12">UTC-12:00 — Baker Island</option>
+                        <option value="-11">UTC-11:00 — Samoa</option>
+                        <option value="-10">UTC-10:00 — Hawaii</option>
+                        <option value="-9">UTC-09:00 — Alaska</option>
+                        <option value="-8">UTC-08:00 — Los Angeles (PST)</option>
+                        <option value="-7">UTC-07:00 — Denver (MST)</option>
+                        <option value="-6">UTC-06:00 — Chicago (CST)</option>
+                        <option value="-5">UTC-05:00 — New York (EST)</option>
+                        <option value="-4">UTC-04:00 — Halifax (AST)</option>
+                        <option value="-3.5">UTC-03:30 — Newfoundland</option>
+                        <option value="-3">UTC-03:00 — São Paulo (BRT)</option>
+                        <option value="0">UTC+00:00 — London (GMT)</option>
+                        <option value="1">UTC+01:00 — Paris (CET)</option>
+                        <option value="2">UTC+02:00 — Cairo (EET)</option>
+                        <option value="3">UTC+03:00 — Moscow / Riyadh</option>
+                        <option value="3.5">UTC+03:30 — Tehran</option>
+                        <option value="4">UTC+04:00 — Dubai (GST)</option>
+                        <option value="4.5">UTC+04:30 — Kabul</option>
+                        <option value="5">UTC+05:00 — Karachi (PKT)</option>
+                        <option value="5.5" selected>UTC+05:30 — Mumbai / Pune (IST)</option>
+                        <option value="5.75">UTC+05:45 — Kathmandu (NPT)</option>
+                        <option value="6">UTC+06:00 — Dhaka (BST)</option>
+                        <option value="6.5">UTC+06:30 — Yangon (MMT)</option>
+                        <option value="7">UTC+07:00 — Bangkok (ICT)</option>
+                        <option value="8">UTC+08:00 — Singapore / Beijing</option>
+                        <option value="9">UTC+09:00 — Tokyo (JST)</option>
+                        <option value="9.5">UTC+09:30 — Adelaide (ACST)</option>
+                        <option value="10">UTC+10:00 — Sydney (AEST)</option>
+                        <option value="11">UTC+11:00 — Solomon Islands</option>
+                        <option value="12">UTC+12:00 — Auckland (NZST)</option>
+                        <option value="13">UTC+13:00 — Samoa (DST)</option>
+                        <option value="14">UTC+14:00 — Line Islands</option>
+                    </select>
+                    <button class="btn btn-svr" onclick="setGPS()">Queue GPS</button>
+                </div>
+                <!-- WIND PANEL -->
+                <div id="panel_wind" class="hidden">
+                    <button class="back-btn" onclick="goBack()">← Back</button>
+                    <label class="small fw-bold mb-1">Wind Threshold (m/s)</label>
+                    <input type="number" id="wind_input" class="form-control mb-2" placeholder="e.g. 12"
+                        style="max-width:280px;margin:auto;">
+                    <button class="btn btn-svr" onclick="setWind()">Queue Wind Limit</button>
+                </div>
+                <!-- ACTUATOR JOG -->
+                <div id="panel_actuator" class="hidden">
+                    <button class="back-btn" onclick="goBack()">← Back</button>
+                    <div class="d-flex justify-content-center gap-3 mt-3">
+                        <button class="btn btn-primary px-4" onmousedown="startElJog(1)" onmouseup="stopElJog()"
+                            onmouseleave="stopElJog()" ontouchstart="startElJog(1)" ontouchend="stopElJog()">▲
+                            EXTEND</button>
+                        <button class="btn btn-primary px-4" onmousedown="startElJog(-1)" onmouseup="stopElJog()"
+                            onmouseleave="stopElJog()" ontouchstart="startElJog(-1)" ontouchend="stopElJog()">▼
+                            RETRACT</button>
+                    </div>
+                    <p class="text-muted small mt-3">Hold to jog. Release to stop.</p>
+                </div>
+                <!-- SERVO JOG -->
+                <div id="panel_servo" class="hidden">
+                    <button class="back-btn" onclick="goBack()">← Back</button>
+                    <div class="d-flex justify-content-center gap-3 mt-3">
+                        <button class="btn btn-primary px-4" onmousedown="startAzJog(-1)" onmouseup="stopAzJog()"
+                            onmouseleave="stopAzJog()" ontouchstart="startAzJog(-1)" ontouchend="stopAzJog()">◀
+                            CCW</button>
+                        <button class="btn btn-primary px-4" onmousedown="startAzJog(1)" onmouseup="stopAzJog()"
+                            onmouseleave="stopAzJog()" ontouchstart="startAzJog(1)" ontouchend="stopAzJog()">▶
+                            CW</button>
+                    </div>
+                    <p class="text-muted small mt-3">Hold to jog. Release to stop.</p>
+                </div>
+                <!-- SUN PANEL -->
+                <div id="panel_sun" class="hidden">
+                    <button class="back-btn" onclick="goBack()">← Back</button>
+                    <div style="max-width:300px;margin:auto;">
+                        <div class="small fw-bold text-muted text-start mb-2">SUNRISE HOUR</div>
+                        <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
+                            <button class="stepper-btn" style="width:40px;height:40px;font-size:1.2rem;"
+                                onclick="adjustHour('sunrise_hour',-1)">−</button>
+                            <div>
+                                <div class="stepper-val" id="sunrise_display">06</div>
+                                <div class="stepper-label">:00</div>
+                            </div>
+                            <button class="stepper-btn" style="width:40px;height:40px;font-size:1.2rem;"
+                                onclick="adjustHour('sunrise_hour',1)">+</button>
+                        </div>
+                        <div class="small fw-bold text-muted text-start mb-2">SUNSET HOUR</div>
+                        <div class="d-flex justify-content-center align-items-center gap-3 mb-3">
+                            <button class="stepper-btn" style="width:40px;height:40px;font-size:1.2rem;"
+                                onclick="adjustHour('sunset_hour',-1)">−</button>
+                            <div>
+                                <div class="stepper-val" id="sunset_display">19</div>
+                                <div class="stepper-label">:00</div>
+                            </div>
+                            <button class="stepper-btn" style="width:40px;height:40px;font-size:1.2rem;"
+                                onclick="adjustHour('sunset_hour',1)">+</button>
+                        </div>
+                        <input type="hidden" id="sunrise_hour" value="6">
+                        <input type="hidden" id="sunset_hour" value="19">
+                        <button class="btn btn-svr w-100" onclick="setSun()">Queue Sun Window</button>
+                    </div>
+                </div>
+                <!-- CALIBRATION PANEL -->
+                <div id="panel_calib" class="hidden">
+                    <button class="back-btn" onclick="goBack()">← Back</button>
+                    <div style="max-width:420px;margin:auto;text-align:left;">
+                        <div
+                            style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:8px 12px;font-size:0.78rem;color:#856404;margin-bottom:12px;">
+                            ⚠ Changes apply on <b>Apply &amp; Resume Auto</b>. Incorrect values may cause physical
+                            damage.
+                        </div>
+                        <div
+                            style="font-size:0.72rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">
+                            Elevation Geometry</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+                            <div>
+                                <label class="small fw-bold d-block mb-1">MIN_ANGLE (°)</label>
+                                <input type="number" step="0.001" id="cal_min_a" class="form-control form-control-sm">
+                                <small class="text-muted">Lower physical stop</small>
+                            </div>
+                            <div>
+                                <label class="small fw-bold d-block mb-1">MAX_ANGLE (°)</label>
+                                <input type="number" step="0.1" id="cal_max_a" class="form-control form-control-sm">
+                                <small class="text-muted">Upper physical stop</small>
+                            </div>
+                            <div>
+                                <label class="small fw-bold d-block mb-1">HOME_ANGLE (°)</label>
+                                <input type="number" step="0.1" id="cal_home_a" class="form-control form-control-sm">
+                                <small class="text-muted">Night / wind park angle</small>
+                            </div>
+                            <div>
+                                <label class="small fw-bold d-block mb-1">TOTAL_STROKE (mm)</label>
+                                <input type="number" step="0.5" id="cal_stroke" class="form-control form-control-sm">
+                                <small class="text-muted">Actuator full travel</small>
+                            </div>
+                            <div style="grid-column:span 2;">
+                                <label class="small fw-bold d-block mb-1">PULSE_PER_MM</label>
+                                <input type="number" step="1" id="cal_ppm" class="form-control form-control-sm">
+                                <small class="text-muted">Actuator encoder pulses per mm</small>
+                            </div>
+                        </div>
+                        <div
+                            style="font-size:0.72rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">
+                            Azimuth Motor</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+                            <div>
+                                <label class="small fw-bold d-block mb-1">PULSES_PER_REV</label>
+                                <input type="number" step="1" id="cal_ppr" class="form-control form-control-sm">
+                                <small class="text-muted">Encoder pulses / motor rev</small>
+                            </div>
+                            <div>
+                                <label class="small fw-bold d-block mb-1">GEAR_RATIO</label>
+                                <input type="number" step="1" id="cal_gear" class="form-control form-control-sm">
+                                <small class="text-muted">Motor turns / output turn</small>
+                            </div>
+                            <div style="grid-column:span 2;">
+                                <label class="small fw-bold d-block mb-1">TOTAL_GEAR_PULSES</label>
+                                <input type="number" step="1000" id="cal_tgp" class="form-control form-control-sm">
+                                <div class="d-flex justify-content-between">
+                                    <small class="text-muted">Pulses for full 360° AZ rotation</small>
+                                    <small id="cal_tgp_computed" class="text-primary fw-bold"></small>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-svr w-100" onclick="queueCalib()">Queue Calibration</button>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <button class="btn btn-success px-5" onclick="sendAll()">✔ APPLY &amp; RESUME AUTO</button>
+                </div>
+                <div class="mt-1 small text-muted" id="queue_summary"></div>
+            </div>
+        </div>
+        <!-- DASH 5: Logs -->
+        <div id="dash5" class="dash-view hidden">
+            <h5 class="fw-bold mb-2">LOGS</h5>
+            <!-- DB stats bar -->
+            <div id="db_stats_bar">
+                <span>Rows: <b id="db_row_count">--</b></span>
+                <span>Oldest: <b id="db_oldest">--</b></span>
+                <span>Newest: <b id="db_newest">--</b></span>
+                <span>DB Size: <b id="db_size">-- MB</b></span>
+            </div>
+            <!-- Query controls -->
+            <div class="log-controls">
+                <label class="small fw-bold mb-0">From:</label>
+                <div style="display:flex;align-items:center;gap:4px;">
+                    <input type="datetime-local" id="log_from">
+                    <div style="display:flex;flex-direction:column;gap:2px;">
+                        <button onclick="nudgeTime('log_from',1)"
+                            style="width:22px;height:22px;border:1px solid #ddd;border-radius:5px;background:white;cursor:pointer;font-size:0.7rem;color:#f39221;padding:0;">▲</button>
+                        <button onclick="nudgeTime('log_from',-1)"
+                            style="width:22px;height:22px;border:1px solid #ddd;border-radius:5px;background:white;cursor:pointer;font-size:0.7rem;color:#f39221;padding:0;">▼</button>
+                    </div>
+                </div>
+                <label class="small fw-bold mb-0">To:</label>
+                <div style="display:flex;align-items:center;gap:4px;">
+                    <input type="datetime-local" id="log_to">
+                    <div style="display:flex;flex-direction:column;gap:2px;">
+                        <button onclick="nudgeTime('log_to',1)"
+                            style="width:22px;height:22px;border:1px solid #ddd;border-radius:5px;background:white;cursor:pointer;font-size:0.7rem;color:#f39221;padding:0;">▲</button>
+                        <button onclick="nudgeTime('log_to',-1)"
+                            style="width:22px;height:22px;border:1px solid #ddd;border-radius:5px;background:white;cursor:pointer;font-size:0.7rem;color:#f39221;padding:0;">▼</button>
+                    </div>
+                </div>
+                <select id="log_limit"
+                    style="font-size:0.78rem;padding:4px 8px;border:1px solid #ddd;border-radius:8px;">
+                    <option value="100">100 rows</option>
+                    <option value="200" selected>200 rows</option>
+                    <option value="500">500 rows</option>
+                    <option value="1000">1000 rows</option>
+                    <option value="5000">5000 rows</option>
+                </select>
+                <button class="btn btn-svr btn-sm" onclick="queryLogs()">🔍 Query</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="setLogRange('today')">Today</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="setLogRange('week')">7 Days</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="setLogRange('month')">30 Days</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="exportCSV()">⬇ CSV</button>
+                <span id="log_row_count" class="small text-muted ms-2"></span>
+            </div>
+            <!-- Category tabs -->
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+                <button class="log-tab active" onclick="setLogTab('all',this)">All</button>
+                <button class="log-tab" onclick="setLogTab('position',this)">Position</button>
+                <button class="log-tab" onclick="setLogTab('wind',this)">Wind</button>
+                <button class="log-tab" onclick="setLogTab('imu',this)">IMU</button>
+                <button class="log-tab" onclick="setLogTab('thermal',this)">Thermal</button>
+                <button class="log-tab" onclick="setLogTab('storage',this)">Storage</button>
+                <button class="log-tab" onclick="setLogTab('gps',this)">GPS / RTC</button>
+                <button class="log-tab" onclick="setLogTab('system',this)">System</button>
+                <button class="log-tab" onclick="setLogTab('motor',this)">Motor</button>
+            </div>
+            <style>
+                .log-tab {
+                    padding: 4px 14px;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    border: 1px solid #ddd;
+                    border-radius: 20px;
+                    background: white;
+                    color: #666;
+                    cursor: pointer;
+                    transition: all 0.15s;
+                }
+
+                .log-tab.active,
+                .log-tab:hover {
+                    background: var(--svr-orange);
+                    color: white;
+                    border-color: var(--svr-orange);
+                }
+
+                .log-table-wrap {
+                    background: white;
+                    border-radius: 12px;
+                    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+                    margin-bottom: 10px;
+                    overflow-x: auto;
+                }
+
+                .log-table-title {
+                    font-size: 0.7rem;
+                    font-weight: 800;
+                    color: #999;
+                    text-transform: uppercase;
+                    letter-spacing: 1.2px;
+                    padding: 10px 14px 4px;
+                    border-bottom: 1px solid #f0f0f0;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                }
+
+                .log-table-title::before {
+                    content: "";
+                    display: inline-block;
+                    width: 3px;
+                    height: 12px;
+                    background: var(--svr-orange);
+                    border-radius: 5px;
+                }
+
+                .log-tbl {
+                    width: 100%;
+                    border-collapse: collapse;
+                    font-size: 0.75rem;
+                }
+
+                .log-tbl thead th {
+                    background: #f8f9fa;
+                    padding: 6px 10px;
+                    text-align: left;
+                    font-weight: 700;
+                    color: #555;
+                    font-size: 0.68rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    border-bottom: 1px solid #eee;
+                    white-space: nowrap;
+                }
+
+                .log-tbl tbody tr {
+                    border-bottom: 1px solid #f5f5f5;
+                }
+
+                .log-tbl tbody tr:last-child {
+                    border-bottom: none;
+                }
+
+                .log-tbl tbody tr:hover {
+                    background: rgba(243, 146, 33, 0.04);
+                }
+
+                .log-tbl td {
+                    padding: 5px 10px;
+                    color: #333;
+                    white-space: nowrap;
+                    font-family: 'Courier New', monospace;
+                    font-size: 0.72rem;
+                }
+
+                .log-tbl td:first-child {
+                    font-family: 'Segoe UI', sans-serif;
+                    color: #999;
+                    font-size: 0.68rem;
+                    font-weight: 600;
+                }
+
+                .log-tbl td.val-ok {
+                    color: #27ae60;
+                    font-weight: 700;
+                }
+
+                .log-tbl td.val-warn {
+                    color: #e67e22;
+                    font-weight: 700;
+                }
+
+                .log-tbl td.val-err {
+                    color: #e74c3c;
+                    font-weight: 700;
+                }
+
+                .log-tbl td.val-num {
+                    color: #2980b9;
+                }
+
+                .log-section {
+                    display: block;
+                }
+
+                .log-section.hidden-section {
+                    display: none;
+                }
+
+                /* Compact calib panel for small displays */
+                #panel_calib .form-control-sm {
+                    padding: 2px 6px;
+                    font-size: 0.75rem;
+                }
+
+                #panel_calib label.small {
+                    font-size: 0.65rem;
+                    margin-bottom: 1px !important;
+                }
+
+                #panel_calib small.text-muted {
+                    display: none;
+                }
+
+                #panel_calib>div {
+                    max-height: calc(100vh - 160px);
+                    overflow-y: auto;
+                    -webkit-overflow-scrolling: touch;
+                }
+
+                body {
+                    overflow: hidden;
+                }
+
+                #main-view {
+                    padding: 8px;
+                    height: calc(100vh - 52px);
+                    overflow-y: auto;
+                    -webkit-overflow-scrolling: touch;
+                    overscroll-behavior: contain;
+                }
+
+                .dash-view {
+                    min-height: 0;
+                    overflow: visible;
+                }
+
+                .log-controls {
+                    display: flex;
+                    gap: 8px;
+                    flex-wrap: wrap;
+                    align-items: center;
+                    margin-bottom: 10px;
+                    background: white;
+                    padding: 10px 14px;
+                    border-radius: 12px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+                }
+
+                input[type="datetime-local"] {
+                    -webkit-appearance: none;
+                    appearance: none;
+                    font-size: 0.78rem;
+                    padding: 4px 8px;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    background: white;
+                    cursor: pointer;
+                    min-width: 160px;
+                }
+
+                /* ── Calib panel scroll ── */
+                #panel_calib>div {
+                    max-height: calc(100vh - 160px);
+                    overflow-y: auto;
+                    -webkit-overflow-scrolling: touch;
+                    overscroll-behavior: contain;
+                }
+
+                #db_stats_bar {
+                    font-size: 0.72rem;
+                    color: #888;
+                    background: #f8f9fa;
+                    border-radius: 8px;
+                    padding: 5px 12px;
+                    margin-bottom: 8px;
+                    display: flex;
+                    gap: 18px;
+                    flex-wrap: wrap;
+                    overflow-x: auto;
+                }
+
+                #db_stats_bar span b {
+                    color: #333;
+                }
+
+                /* Flex dashes — only active when NOT hidden */
+                #dash3:not(.hidden),
+                #dash5:not(.hidden) {
+                    display: flex !important;
+                    flex-direction: column;
+                    height: calc(100vh - 52px - 16px);
+                }
+            </style>
+            <div id="log_tables_scroll"
+                style="overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;">
+                <!-- POSITION -->
+                <div class="log-table-wrap log-section" data-cat="position">
+                    <div class="log-table-title">Position & Tracking</div>
+                    <table class="log-tbl">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>AZ Calc</th>
+                                <th>EL Calc</th>
+                                <th>AZ Actual</th>
+                                <th>EL Actual</th>
+                                <th>AZ Enc</th>
+                                <th>AZ Tgt</th>
+                                <th>AZ Err</th>
+                                <th>EL Enc</th>
+                                <th>EL Tgt</th>
+                                <th>EL Err</th>
+                            </tr>
+                        </thead>
+                        <tbody id="log_tbody_position"></tbody>
+                    </table>
+                </div>
+                <!-- WIND -->
+                <div class="log-table-wrap log-section" data-cat="wind">
+                    <div class="log-table-title">Wind</div>
+                    <table class="log-tbl">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Speed (m/s)</th>
+                                <th>Threshold</th>
+                                <th>Status</th>
+                                <th>Park AZ</th>
+                                <th>Park EL</th>
+                                <th>Cooling</th>
+                            </tr>
+                        </thead>
+                        <tbody id="log_tbody_wind"></tbody>
+                    </table>
+                </div>
+                <!-- IMU -->
+                <div class="log-table-wrap log-section" data-cat="imu">
+                    <div class="log-table-title">IMU</div>
+                    <table class="log-tbl">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Pitch</th>
+                                <th>Roll</th>
+                                <th>Yaw</th>
+                                <th>Acc X</th>
+                                <th>Acc Y</th>
+                                <th>Acc Z</th>
+                                <th>Gyro X</th>
+                                <th>Gyro Y</th>
+                                <th>Gyro Z</th>
+                                <th>EL Diff</th>
+                                <th>EL Alert</th>
+                                <th>Enc AZ</th>
+                                <th>vs Enc</th>
+                                <th>IMU OK</th>
+                                <th>Tilt Alarm</th>
+                            </tr>
+                        </thead>
+                        <tbody id="log_tbody_imu"></tbody>
+                    </table>
+                </div>
+                <!-- THERMAL -->
+                <div class="log-table-wrap log-section" data-cat="thermal">
+                    <div class="log-table-title">Thermal (Probes 1–4)</div>
+                    <table class="log-tbl">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Probe 1 (°C)</th>
+                                <th>Probe 2 (°C)</th>
+                                <th>Probe 3 (°C)</th>
+                                <th>Probe 4 (°C)</th>
+                                <th>DS18B20 (°C)</th>
+                                <th>DS OK</th>
+                            </tr>
+                        </thead>
+                        <tbody id="log_tbody_thermal"></tbody>
+                    </table>
+                </div>
+                <!-- STORAGE -->
+                <div class="log-table-wrap log-section" data-cat="storage">
+                    <div class="log-table-title">Storage (Probes 5–9)</div>
+                    <table class="log-tbl">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Probe 5 (°C)</th>
+                                <th>Probe 6 (°C)</th>
+                                <th>Probe 7 (°C)</th>
+                                <th>Probe 8 (°C)</th>
+                                <th>Probe 9 (°C)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="log_tbody_storage"></tbody>
+                    </table>
+                </div>
+                <!-- GPS/RTC -->
+                <div class="log-table-wrap log-section" data-cat="gps">
+                    <div class="log-table-title">GPS / RTC</div>
+                    <table class="log-tbl">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>RTC Date</th>
+                                <th>RTC Time</th>
+                                <th>RTC OK</th>
+                                <th>Latitude</th>
+                                <th>Longitude</th>
+                                <th>Day Start</th>
+                                <th>Day End</th>
+                            </tr>
+                        </thead>
+                        <tbody id="log_tbody_gps"></tbody>
+                    </table>
+                </div>
+                <!-- SYSTEM -->
+                <div class="log-table-wrap log-section" data-cat="system">
+                    <div class="log-table-title">System State</div>
+                    <table class="log-tbl">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Mode</th>
+                                <th>Synced</th>
+                                <th>Is Home</th>
+                                <th>Homing</th>
+                                <th>Night Park</th>
+                                <th>Night Done</th>
+                                <th>Mov Home</th>
+                                <th>Prox AZ</th>
+                                <th>Prox EL</th>
+                                <th>EL Full</th>
+                                <th>AZ Miss</th>
+                                <th>EL Miss</th>
+                                <th>Nudge</th>
+                                <th>EL Nudge</th>
+                                <th>AZ Fault</th>
+                            </tr>
+                        </thead>
+                        <tbody id="log_tbody_system"></tbody>
+                    </table>
+                </div>
+                <!-- MOTOR -->
+                <div class="log-table-wrap log-section" data-cat="motor">
+                    <div class="log-table-title">Motor Steps</div>
+                    <table class="log-tbl">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Step AZ</th>
+                                <th>Step EL</th>
+                                <th>AZ Fault</th>
+                                <th>Park AZ</th>
+                                <th>Park EL</th>
+                                <th>Cooling</th>
+                            </tr>
+                        </thead>
+                        <tbody id="log_tbody_motor"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- DASH 6: Storage -->
+        <div id="dash6" class="dash-view hidden">
+            <h5 class="fw-bold mb-2">Thermal Storage Monitor</h5>
+            <div class="dashboard-section">
+                <div class="section-header">Storage Tank Probes</div>
+                <div class="telem-grid" style="margin-bottom:6px;">
+                    <div class="telem-cell">
+                        <span class="telem-label">Probe 5 (TC)</span>
+                        <div class="telem-val"><span id="tc_p5">--</span><span class="telem-unit">°C</span></div>
+                    </div>
+                    <div class="telem-cell">
+                        <span class="telem-label">Probe 6 (TC)</span>
+                        <div class="telem-val"><span id="tc_p6">--</span><span class="telem-unit">°C</span></div>
+                    </div>
+                    <div class="telem-cell">
+                        <span class="telem-label">Probe 7 (TC)</span>
+                        <div class="telem-val"><span id="tc_p7">--</span><span class="telem-unit">°C</span></div>
+                    </div>
+                    <div class="telem-cell">
+                        <span class="telem-label">Probe 8 (TC)</span>
+                        <div class="telem-val"><span id="tc_p8">--</span><span class="telem-unit">°C</span></div>
+                    </div>
+                </div>
+                <div class="telem-grid">
+                    <div class="telem-cell">
+                        <span class="telem-label">Probe 9 (TC)</span>
+                        <div class="telem-val"><span id="tc_p9">--</span><span class="telem-unit">°C</span></div>
+                    </div>
+                    <div class="telem-cell">
+                        <span class="telem-label">DS18B20 (Tank Ref)</span>
+                        <div class="telem-val"><span id="storage_ds_temp">--</span><span class="telem-unit">°C</span>
+                        </div>
+                    </div>
+                    <div class="telem-cell">
+                        <span class="telem-label">Probes OK</span>
+                        <div class="telem-val"><span id="tc_ok_count">0</span>/9</div>
+                    </div>
+                    <div class="telem-cell">
+                        <span class="telem-label">Faults</span>
+                        <div class="telem-val" id="tc_fault_count" style="color:#e74c3c;">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Date range picker ── -->
+            <div class="log-controls" style="margin-bottom:10px;">
+                <label class="small fw-bold mb-0">From:</label>
+                <div style="display:flex;align-items:center;gap:4px;">
+                    <input type="datetime-local" id="storage_chart_from">
+                    <div style="display:flex;flex-direction:column;gap:2px;">
+                        <button onclick="nudgeTime('storage_chart_from',1)"
+                            style="width:22px;height:22px;border:1px solid #ddd;border-radius:5px;background:white;cursor:pointer;font-size:0.7rem;color:#f39221;padding:0;">▲</button>
+                        <button onclick="nudgeTime('storage_chart_from',-1)"
+                            style="width:22px;height:22px;border:1px solid #ddd;border-radius:5px;background:white;cursor:pointer;font-size:0.7rem;color:#f39221;padding:0;">▼</button>
+                    </div>
+                </div>
+                <label class="small fw-bold mb-0">To:</label>
+                <div style="display:flex;align-items:center;gap:4px;">
+                    <input type="datetime-local" id="storage_chart_to">
+                    <div style="display:flex;flex-direction:column;gap:2px;">
+                        <button onclick="nudgeTime('storage_chart_to',1)"
+                            style="width:22px;height:22px;border:1px solid #ddd;border-radius:5px;background:white;cursor:pointer;font-size:0.7rem;color:#f39221;padding:0;">▲</button>
+                        <button onclick="nudgeTime('storage_chart_to',-1)"
+                            style="width:22px;height:22px;border:1px solid #ddd;border-radius:5px;background:white;cursor:pointer;font-size:0.7rem;color:#f39221;padding:0;">▼</button>
+                    </div>
+                </div>
+                <select id="storage_chart_points"
+                    style="font-size:0.78rem;padding:4px 8px;border:1px solid #ddd;border-radius:8px;">
+                    <option value="100">100 pts</option>
+                    <option value="200" selected>200 pts</option>
+                    <option value="500">500 pts</option>
+                    <option value="1000">1000 pts</option>
+                </select>
+                <button class="btn btn-svr btn-sm" onclick="queryStorageChart()">📈 Plot</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="setStorageChartRange('hour')">1 Hour</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="setStorageChartRange('today')">Today</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="setStorageChartRange('week')">7 Days</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="setStorageChartRange('month')">30
+                    Days</button>
+                <button class="btn btn-outline-secondary btn-sm" onclick="setStorageChartRange('live')">▶ Live</button>
+                <span id="storage_chart_info" class="small text-muted ms-2"></span>
+            </div>
+
+            <div class="dashboard-section">
+                <div class="section-header">Storage Probes (5–9) — Graph</div>
+                <div class="chart-legend">
+                    <div class="chart-legend-item"><span class="legend-line" style="background:#1abc9c;"></span>Probe 5
+                    </div>
+                    <div class="chart-legend-item"><span class="legend-line" style="background:#e67e22;"></span>Probe 6
+                    </div>
+                    <div class="chart-legend-item"><span class="legend-line" style="background:#34495e;"></span>Probe 7
+                    </div>
+                    <div class="chart-legend-item"><span class="legend-line" style="background:#c0392b;"></span>Probe 8
+                    </div>
+                    <div class="chart-legend-item"><span class="legend-line" style="background:#8e44ad;"></span>Probe 9
+                    </div>
+                </div>
+                <canvas id="storageChart" height="140"></canvas>
+            </div>
+        </div>
+    </div>
+    <!-- Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-radius:16px;border:none;font-size:0.85rem;">
+                <div class="modal-header border-0 p-3">
+                    <h5 class="modal-title fw-bold" style="font-size:1rem;">Create New Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-3 pt-0">
+                    <div class="mb-2"><label class="form-label small fw-bold">User ID *</label>
+                        <input type="text" id="new_userid" class="form-control form-control-sm"
+                            placeholder="e.g. john.doe" autocomplete="off">
+                    </div>
+                    <div class="mb-2"><label class="form-label small fw-bold">Full Name</label>
+                        <input type="text" id="new_name" class="form-control form-control-sm" placeholder="Enter Name">
+                    </div>
+                    <div class="mb-2"><label class="form-label small fw-bold">Email</label>
+                        <input type="email" id="new_email" class="form-control form-control-sm"
+                            placeholder="name@company.com">
+                    </div>
+                    <div class="mb-2"><label class="form-label small fw-bold">Role</label>
+                        <select id="new_role" class="form-select form-select-sm">
+                            <option value="Creator">Creator</option>
+                            <option value="Customer">Customer</option>
+                            <option value="Viewer">Viewer</option>
+                        </select>
+                    </div>
+                    <div class="mb-2"><label class="form-label small fw-bold">Profile Photo</label>
+                        <input type="file" id="profile_photo" class="form-control form-control-sm">
+                    </div>
+                    <div class="mb-2"><label class="form-label small fw-bold">Password</label>
+                        <input type="password" id="new_pass" class="form-control form-control-sm"
+                            placeholder="Set password">
+                    </div>
+                    <div class="mb-2"><label class="form-label small fw-bold">Confirm Password</label>
+                        <input type="password" id="confirm_pass" class="form-control form-control-sm"
+                            placeholder="Repeat password">
+                    </div>
+                    <button class="btn btn-svr w-100 py-2 mt-2" onclick="saveProfile()" id="create-profile-btn">
+                        AUTHORIZE &amp; CREATE PROFILE
+                    </button>
+                    <div class="text-center mt-2">
+                        <small id="profile-slot-count" class="text-muted">Loading slots...</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // =========================================================================
+        //  LOGIN
+        // =========================================================================
+
+
+        // function updateProfileSlotCount() {
+        //     const saved = JSON.parse(localStorage.getItem('svr_profiles') || '{}');
+        //     const used = Object.keys(saved).length, remaining = 5 - used;
+        //     const el = document.getElementById('profile-slot-count');
+        //     const btn = document.getElementById('create-profile-btn');
+        //     if (!el) return;
+        //     if (remaining <= 0) { el.innerHTML = '<span style="color:red;">⚠ All 5 slots used</span>'; if (btn) btn.disabled = true; }
+        //     else { el.textContent = `${used}/5 used — ${remaining} remaining`; if (btn) btn.disabled = false; }
+        // }
+        // function loadUsers() {
+        //     try { return Object.assign({}, DEFAULT_USERS, JSON.parse(localStorage.getItem('svr_profiles') || '{}')); }
+        //     catch (e) { return Object.assign({}, DEFAULT_USERS); }
+        // }
+        function logout() {
+            fetch('/api/logout', { method: 'POST', credentials: 'include' })
+                .then(() => location.reload());
+        }
+        //let USERS = loadUsers();
+        const MAX_ATTEMPTS = 5, LOCKOUT_MS = 60000;
+        let loginAttempts = 0, lockedUntil = 0;
+
+        function attemptLogin() {
+            const errorEl = document.getElementById('login-error');
+            const id = document.getElementById('login_id').value.trim();
+            const pass = document.getElementById('login_pass').value;
+            if (!id || !pass) { errorEl.innerText = "Enter User ID and Password."; return; }
+
+            fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ username: id, password: pass })
+            })
+                .then(r => r.json().then(data => ({ ok: r.ok, data })))
+                .then(({ ok, data }) => {
+                    if (!ok) {
+                        const screen = document.getElementById('login-screen');
+                        screen.classList.remove('shake'); void screen.offsetWidth; screen.classList.add('shake');
+                        errorEl.innerText = data.error || "Login failed.";
+                        document.getElementById('login_pass').value = "";
+                        return;
+                    }
+                    errorEl.innerText = "";
+                    window._loggedInUser = data.user;
+                    window._userRole = data.role;
+                    document.getElementById('profile_name').innerText = data.user;
+                    document.getElementById('profile_role_sub').innerText = data.role;
+                    document.getElementById('login_id').value = "";
+                    document.getElementById('login_pass').value = "";
+                    const screen = document.getElementById('login-screen');
+                    screen.style.transition = "opacity 0.35s"; screen.style.opacity = "0";
+                    setTimeout(() => {
+                        screen.style.display = "none";
+                        document.body.style.overflow = "auto";
+                    }, 350);
+                })
+                .catch(() => { errorEl.innerText = "Server error — try again."; });
+        }
+
+        function getRoleLabel(id) {
+            const roles = { "admin": "Administrator", "operator": "Operator", "viewer": "Viewer" };
+            if (roles[id]) return roles[id];
+            try { return JSON.parse(localStorage.getItem('svr_profile_meta') || '{}')[id]?.role || "User"; } catch (e) { return "User"; }
+        }
+
+        (function checkSession() {
+            fetch('/api/session', { credentials: 'include' })
+                .then(r => r.json())
+                .then(d => {
+                    if (d.logged_in) {
+                        document.getElementById('login-screen').style.display = "none";
+                        document.getElementById('profile_name').innerText = d.user;
+                        document.getElementById('profile_role_sub').innerText = d.role;
+                        window._loggedInUser = d.user;
+                        window._userRole = d.role;
+                        document.body.style.overflow = "auto";
+                    } else {
+                        document.body.style.overflow = "hidden";
+                    }
+                });
+        })();
+
+        // =========================================================================
+        //  SIDEBAR / SPLASH
+        // =========================================================================
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("open");
+            document.getElementById("overlay").classList.toggle("show");
+        }
+        window.addEventListener("load", () => {
+            setTimeout(() => {
+                const s = document.getElementById("splash");
+                s.style.transition = "opacity 0.5s"; s.style.opacity = "0";
+                setTimeout(() => { s.style.display = "none"; document.body.style.overflow = "auto"; }, 500);
+            }, 3000);
+        });
+
+        // =========================================================================
+        //  JOG CONTROLS
+        // =========================================================================
+        let elJogInterval = null;
+        function startElJog(dir) { stopElJog(); apiPost('/api/control', { cmd: 'el_jog', dir }); elJogInterval = setInterval(() => apiPost('/api/control', { cmd: 'el_jog', dir }), 300); }
+        function stopElJog() { clearInterval(elJogInterval); elJogInterval = null; apiPost('/api/control', { cmd: 'el_jog', dir: 0 }); setTimeout(() => apiPost('/api/control', { cmd: 'el_jog', dir: 0 }), 200); setTimeout(() => apiPost('/api/control', { cmd: 'el_jog', dir: 0 }), 400); }
+        let azJogInterval = null;
+        function startAzJog(dir) { stopAzJog(); apiPost('/api/control', { cmd: 'az_jog', dir }); azJogInterval = setInterval(() => apiPost('/api/control', { cmd: 'az_jog', dir }), 300); }
+        function stopAzJog() { clearInterval(azJogInterval); azJogInterval = null; apiPost('/api/control', { cmd: 'az_jog', dir: 0 }); setTimeout(() => apiPost('/api/control', { cmd: 'az_jog', dir: 0 }), 200); setTimeout(() => apiPost('/api/control', { cmd: 'az_jog', dir: 0 }), 400); }
+
+        // =========================================================================
+        //  UTILITIES
+        // =========================================================================
+        const safe = (v, def = 0) => (v !== undefined && v !== null && !isNaN(v)) ? v : def;
+        function setLED(id, value) {
+            const el = document.getElementById(id); if (!el) return;
+            if (Number(value) >= 1) { el.style.background = "limegreen"; el.style.boxShadow = "0 0 10px limegreen"; }
+            else { el.style.background = "red"; el.style.boxShadow = "0 0 8px red"; }
+        }
+        function apiPost(path, body) { return fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(body) }).then(r => r.json()); }
+
+        // =========================================================================
+        //  MODE SYNC
+        // =========================================================================
+        let currentMode = "auto";
+        function applyModeUI(mode) {
+            currentMode = mode;
+            document.getElementById("autoBtn").className = "btn btn-sm " + (mode === "auto" ? "btn-success" : "btn-outline-secondary");
+            document.getElementById("manualBtn").className = "btn btn-sm " + (mode === "manual" ? "btn-warning" : "btn-outline-secondary");
+            document.getElementById("manualControls").style.display = (mode === "manual") ? "block" : "none";
+            const badge = document.getElementById("mode_badge");
+            if (badge) { badge.textContent = mode.toUpperCase(); badge.className = "badge " + (mode === "auto" ? "bg-success" : "bg-warning text-dark"); }
+            const lbl = document.getElementById("pico_mode_label"); if (lbl) lbl.textContent = mode;
+        }
+        let _modePending = false, _pendingMode = null;
+        function requestSetMode(mode) { applyModeUI(mode); _modePending = true; _pendingMode = mode; apiPost('/api/control', { cmd: "set_mode", val: mode }).catch(e => console.error(e)); }
+        function syncModeFromTelemetry(picoMode) {
+            if (_modePending) { if (picoMode === _pendingMode) { _modePending = false; _pendingMode = null; applyModeUI(picoMode); } return; }
+            if (picoMode === currentMode) return; applyModeUI(picoMode);
+        }
+
+        // =========================================================================
+        //  CONFIG BUFFER
+        // =========================================================================
+        let configBuffer = {};
+        function _updateQueueSummary() { const keys = Object.keys(configBuffer); const el = document.getElementById("queue_summary"); if (el) el.textContent = keys.length ? "Queued: " + keys.join(", ") : ""; }
+
+        // =========================================================================
+        //  RTC STEPPER
+        // =========================================================================
+        function _daysInMonth(m, y) { return new Date(y, m, 0).getDate(); }
+        function adjustRTC(field, delta) {
+            const idMap = { day: 'rtc_day_val', month: 'rtc_month_val', year: 'rtc_year_val', hour: 'rtc_hour_val', minute: 'rtc_minute_val', second: 'rtc_second_val' };
+            const dispMap = { day: 'rtc_day_display', month: 'rtc_month_display', year: 'rtc_year_display', hour: 'rtc_hour_display', minute: 'rtc_minute_display', second: 'rtc_second_display' };
+            const input = document.getElementById(idMap[field]);
+            let val = parseInt(input.value) + delta;
+            const year = parseInt(document.getElementById('rtc_year_val').value);
+            const month = parseInt(document.getElementById('rtc_month_val').value);
+            if (field === 'second' || field === 'minute') { if (val < 0) val = 59; if (val > 59) val = 0; }
+            else if (field === 'hour') { if (val < 0) val = 23; if (val > 23) val = 0; }
+            else if (field === 'month') { if (val < 1) val = 12; if (val > 12) val = 1; const di = document.getElementById('rtc_day_val'); const mx = _daysInMonth(val, year); if (parseInt(di.value) > mx) { di.value = mx; document.getElementById('rtc_day_display').innerText = String(mx).padStart(2, '0'); } }
+            else if (field === 'year') { if (val < 2020) val = 2020; if (val > 2099) val = 2099; }
+            else if (field === 'day') { const mx = _daysInMonth(month, year); if (val < 1) val = mx; if (val > mx) val = 1; }
+            input.value = val;
+            const d = document.getElementById(dispMap[field]); if (d) d.innerText = (field === 'year') ? String(val) : String(val).padStart(2, '0');
+        }
+        function setRTC() {
+            const d = parseInt(document.getElementById('rtc_day_val').value);
+            const mo = parseInt(document.getElementById('rtc_month_val').value);
+            const y = parseInt(document.getElementById('rtc_year_val').value);
+            const h = parseInt(document.getElementById('rtc_hour_val').value);
+            const m = parseInt(document.getElementById('rtc_minute_val').value);
+            const s = parseInt(document.getElementById('rtc_second_val').value);
+            configBuffer.rtc_date = `${y}-${String(mo).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            configBuffer.rtc_time = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            alert(`RTC queued: ${configBuffer.rtc_date} ${configBuffer.rtc_time}`);
+            _updateQueueSummary();
+        }
+
+        // =========================================================================
+        //  GPS / WIND / SUN
+        // =========================================================================
+        function setGPS() {
+            const lat = document.getElementById('lat_input').value, lon = document.getElementById('lon_input').value, tz = document.getElementById('tz_select').value;
+            if (!lat || !lon) { alert("Enter both Lat and Lon"); return; }
+            configBuffer.lat = parseFloat(lat); configBuffer.lon = parseFloat(lon); configBuffer.tz = parseFloat(tz);
+            alert("GPS queued"); _updateQueueSummary();
+        }
+        function setWind() {
+            const val = document.getElementById("wind_input").value;
+            if (!val) { alert("Enter wind threshold"); return; }
+            configBuffer.wind_limit = parseFloat(val); alert("Wind limit queued"); _updateQueueSummary();
+        }
+        function adjustHour(id, delta) {
+            const input = document.getElementById(id); let val = parseInt(input.value) + delta;
+            if (val < 0) val = 0; if (val > 23) val = 23; input.value = val;
+            const disp = (id === 'sunrise_hour') ? 'sunrise_display' : 'sunset_display';
+            const d = document.getElementById(disp); if (d) d.innerText = String(val).padStart(2, '0');
+        }
+        function setSun() {
+            const sr = parseInt(document.getElementById('sunrise_hour').value);
+            const ss = parseInt(document.getElementById('sunset_hour').value);
+            if (isNaN(sr) || isNaN(ss)) { alert("Enter valid hours"); return; }
+            if (sr >= ss) { alert("Sunrise must be before sunset"); return; }
+            configBuffer.sunrise = String(sr).padStart(2, '0') + ":00";
+            configBuffer.sunset = String(ss).padStart(2, '0') + ":00";
+            alert(`Sun window queued: ${sr}:00 → ${ss}:00`); _updateQueueSummary();
+        }
+
+        // ── Calibration panel ─────────────────────────────────────────────────────────
+        const CAL_DEFAULTS = {
+            min_a: 9.533, max_a: 95.0, home_a: 90.0,
+            stroke: 550.0, ppm: 3800.0,
+            ppr: 12050, gear: 1200, tgp: 14460000
+        };
+
+        function openCalibPanel() {
+            const ld = window._lastTelemetry || {};
+            // Pull from live telemetry if available, else fall back to CAL_DEFAULTS
+            document.getElementById('cal_min_a').value = ld.cal_min_a ?? CAL_DEFAULTS.min_a;
+            document.getElementById('cal_max_a').value = ld.cal_max_a ?? CAL_DEFAULTS.max_a;
+            document.getElementById('cal_home_a').value = ld.cal_home_a ?? CAL_DEFAULTS.home_a;
+            document.getElementById('cal_stroke').value = ld.cal_stroke ?? CAL_DEFAULTS.stroke;
+            document.getElementById('cal_ppm').value = ld.cal_ppm ?? CAL_DEFAULTS.ppm;
+            document.getElementById('cal_ppr').value = ld.cal_ppr ?? CAL_DEFAULTS.ppr;
+            document.getElementById('cal_gear').value = ld.cal_gear ?? CAL_DEFAULTS.gear;
+            document.getElementById('cal_tgp').value = ld.cal_tgp ?? CAL_DEFAULTS.tgp;
+            updateCalibDerived();
+        }
+
+        function updateCalibDerived() {
+            const ppr = parseInt(document.getElementById('cal_ppr').value) || 0;
+            const gear = parseInt(document.getElementById('cal_gear').value) || 0;
+            const computed = ppr * gear;
+            document.getElementById('cal_tgp_computed').textContent = 'Computed: ' + computed.toLocaleString();
+        }
+
+        function queueCalib() {
+            const payload = {
+                // cmd: 'set_calib',
+                min_a: parseFloat(document.getElementById('cal_min_a').value),
+                max_a: parseFloat(document.getElementById('cal_max_a').value),
+                home_a: parseFloat(document.getElementById('cal_home_a').value),
+                stroke: parseFloat(document.getElementById('cal_stroke').value),
+                ppm: parseFloat(document.getElementById('cal_ppm').value),
+                ppr: parseInt(document.getElementById('cal_ppr').value),
+                gear: parseInt(document.getElementById('cal_gear').value),
+                tgp: parseInt(document.getElementById('cal_tgp').value),
+            };
+            if (payload.min_a >= payload.max_a) { alert('MIN_ANGLE must be less than MAX_ANGLE'); return; }
+            if (payload.home_a < payload.min_a || payload.home_a > payload.max_a) { alert('HOME_ANGLE must be between MIN and MAX angle'); return; }
+            if (payload.stroke <= 0 || payload.ppm <= 0) { alert('STROKE and PPM must be positive'); return; }
+            if (payload.ppr <= 0 || payload.gear <= 0 || payload.tgp <= 0) { alert('AZ values must be positive'); return; }
+            Object.assign(configBuffer, { calib: payload });
+            configBuffer.calib = payload;
+            alert('Calibration queued. Click Apply & Resume Auto to send.');
+            _updateQueueSummary();
+        }
+
+        // =========================================================================
+        //  APPLY
+        // =========================================================================
+        function sendAll() {
+            if (currentMode !== "manual") { alert("⚠ Switch to Manual mode first."); return; }
+            if (Object.keys(configBuffer).length === 0) {
+                apiPost('/api/control', { cmd: "apply" }).then(() => { configBuffer = {}; _updateQueueSummary(); setTimeout(refreshData, 500); setTimeout(refreshData, 2000); alert("No changes — APPLY sent."); });
+                return;
+            }
+            apiPost('/api/update', configBuffer)
+                .then(d => { if (d.status === "ok" || d.status === "partial") { if (d.status === "partial") alert("⚠ Some errors:\n" + d.errors.join("\n")); return apiPost('/api/control', { cmd: "apply" }); } else throw new Error(d.error || "Update failed"); })
+                .then(() => { configBuffer = {}; _updateQueueSummary(); setTimeout(refreshData, 500); setTimeout(refreshData, 2500); alert("Applied — AUTO resuming."); })
+                .catch(e => alert("❌ Error: " + e.message));
+        }
+
+        // =========================================================================
+        //  CHARTS — Historical + Live
+        // =========================================================================
+        let tempChart = null, positionChart = null;
+        const CHART_MAX_PTS = 120;
+        let _chartMode = 'live';
+
+        function _makeDataset(label, color, dash) {
+            return {
+                label,
+                data: [],
+                borderColor: color,
+                backgroundColor: color + '18',
+                borderWidth: 2,
+                tension: 0.3,
+                pointRadius: 0,
+                pointHoverRadius: 4,
+                borderDash: dash || [],
+                spanGaps: true
+            };
+        }
+        function initChart() {
+            const sharedOpts = {
+                responsive: true,
+                animation: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        bodyFont: { size: 10 },
+                        titleFont: { size: 10 },
+                        backgroundColor: 'rgba(20,20,30,0.85)',
+                        borderColor: '#f39221',
+                        borderWidth: 1,
+                        padding: 8
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            font: { size: 9 }, maxTicksLimit: 12, color: '#aaa',
+                            maxRotation: 30, minRotation: 0
+                        },
+                        grid: { color: '#f0f0f0' }
+                    },
+                    y: {
+                        ticks: { font: { size: 9 }, color: '#aaa' },
+                        grid: { color: '#f0f0f0' }
+                    }
+                }
+            };
+            // Temperature Chart
+            const tc = document.getElementById('tempChart');
+            if (tc) {
+                tempChart = new Chart(tc.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [
+                            _makeDataset('Probe 1 (°C)', '#e74c3c'),
+                            _makeDataset('Probe 2 (°C)', '#3498db'),
+                            _makeDataset('Probe 3 (°C)', '#f39221'),
+                            _makeDataset('Probe 4 (°C)', '#9b59b6'),
+                            _makeDataset('DST — DS18B20 (°C)', '#27ae60')
+                        ]
+                    },
+                    options: JSON.parse(JSON.stringify(sharedOpts))
+                });
+            }
+            // Position Chart — dual Y axes
+            const pc = document.getElementById('positionChart');
+            if (pc) {
+                const posOpts = JSON.parse(JSON.stringify(sharedOpts));
+                posOpts.scales.yLeft = {
+                    type: 'linear', position: 'left',
+                    title: { display: true, text: 'EL (°)', font: { size: 9 }, color: '#9b59b6' },
+                    ticks: { font: { size: 9 }, color: '#aaa' },
+                    grid: { color: '#f0f0f0' },
+                    suggestedMin: 0, suggestedMax: 90
+                };
+                posOpts.scales.yRight = {
+                    type: 'linear', position: 'right',
+                    title: { display: true, text: 'AZ (°)', font: { size: 9 }, color: '#e74c3c' },
+                    ticks: { font: { size: 9 }, color: '#aaa' },
+                    grid: { drawOnChartArea: false },
+                    suggestedMin: 0, suggestedMax: 360
+                };
+                delete posOpts.scales.y;
+                const elDs1 = _makeDataset('Target EL (°)', '#9b59b6');
+                const azDs1 = _makeDataset('Target AZ (°)', '#e74c3c');
+                const elDs2 = _makeDataset('Actual EL (°)', '#1abc9c', [5, 3]);
+                const azDs2 = _makeDataset('Actual AZ (°)', '#f39221', [5, 3]);
+                elDs1.yAxisID = 'yLeft'; elDs2.yAxisID = 'yLeft';
+                azDs1.yAxisID = 'yRight'; azDs2.yAxisID = 'yRight';
+                positionChart = new Chart(pc.getContext('2d'), {
+                    type: 'line',
+                    data: { labels: [], datasets: [elDs1, azDs1, elDs2, azDs2] },
+                    options: posOpts
+                });
+            }
+        }
+
+        let storageChart = null;
+        let _storageChartMode = 'live';
+        const STORAGE_COLORS = ['#1abc9c', '#e67e22', '#34495e', '#c0392b', '#8e44ad'];
+
+        function initStorageChart() {
+            const el = document.getElementById('storageChart');
+            if (!el) return;
+            const datasets = [];
+            for (let i = 0; i < 5; i++) {
+                datasets.push(_makeDataset(`Probe ${i + 5}`, STORAGE_COLORS[i]));
+            }
+            storageChart = new Chart(el.getContext('2d'), {
+                type: 'line',
+                data: { labels: [], datasets },
+                options: {
+                    responsive: true,
+                    animation: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            bodyFont: { size: 10 }, titleFont: { size: 10 },
+                            backgroundColor: 'rgba(20,20,30,0.85)',
+                            borderColor: '#f39221', borderWidth: 1, padding: 8
+                        }
+                    },
+                    scales: {
+                        x: { ticks: { font: { size: 9 }, maxTicksLimit: 12, color: '#aaa', maxRotation: 30 }, grid: { color: '#f0f0f0' } },
+                        y: { ticks: { font: { size: 9 }, color: '#aaa' }, grid: { color: '#f0f0f0' } }
+                    }
+                }
+            });
+        }
+
+        function updateStorageChart(tcArr) {
+            if (!storageChart) return;
+            if (_storageChartMode !== 'live') return;
+            const lbl = new Date().toLocaleTimeString();
+            storageChart.data.labels.push(lbl);
+            for (let i = 0; i < 5; i++) {
+                const v = tcArr[i + 4];   // Probe 5 = index 4, ... Probe 9 = index 8
+                storageChart.data.datasets[i].data.push(typeof v === 'number' ? v : null);
+            }
+            if (storageChart.data.labels.length > CHART_MAX_PTS) {
+                storageChart.data.labels.shift();
+                storageChart.data.datasets.forEach(ds => ds.data.shift());
+            }
+            storageChart.update('none');
+        }
+
+        function setStorageChartRange(preset) {
+            const now = new Date();
+            const from = new Date(now);
+            if (preset === 'live') {
+                _storageChartMode = 'live';
+                document.getElementById('storage_chart_info').textContent = '▶ Live streaming';
+                if (storageChart) {
+                    storageChart.data.labels = [];
+                    storageChart.data.datasets.forEach(ds => ds.data = []);
+                    storageChart.update('none');
+                }
+                return;
+            }
+            if (preset === 'hour') from.setHours(from.getHours() - 1);
+            if (preset === 'today') from.setHours(0, 0, 0, 0);
+            if (preset === 'week') from.setDate(from.getDate() - 7);
+            if (preset === 'month') from.setDate(from.getDate() - 30);
+            document.getElementById('storage_chart_from').value = _toLocalDTL(from);
+            document.getElementById('storage_chart_to').value = _toLocalDTL(now);
+            queryStorageChart();
+        }
+
+        function queryStorageChart() {
+            _storageChartMode = 'historical';
+            const from = document.getElementById('storage_chart_from').value;
+            const to = document.getElementById('storage_chart_to').value;
+            const points = document.getElementById('storage_chart_points').value;
+            if (!from || !to) { alert('Select From and To dates.'); return; }
+
+            const fromStr = from.replace('T', ' ') + ':00';
+            const toStr = to.replace('T', ' ') + ':59';
+            document.getElementById('storage_chart_info').textContent = '⏳ Loading...';
+
+            const url = `/api/chart?from=${encodeURIComponent(fromStr)}&to=${encodeURIComponent(toStr)}&points=${points}&type=storage`;
+            fetch(url, { credentials: 'include' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('storage_chart_info').textContent = '❌ ' + data.error;
+                        return;
+                    }
+                    const rows = data.rows || [];
+                    const total = rows.length;
+                    if (storageChart) {
+                        storageChart.data.labels = rows.map(r => _fmtLabel(r.ts, total));
+                        for (let i = 0; i < 5; i++) {
+                            const key = 'tc_' + (i + 5);
+                            storageChart.data.datasets[i].data = rows.map(r => r[key] != null ? parseFloat(r[key]) : null);
+                        }
+                        storageChart.update();
+                    }
+                    document.getElementById('storage_chart_info').textContent =
+                        `${total.toLocaleString()} pts shown / ${(data.total || 0).toLocaleString()} total` +
+                        (data.step > 1 ? ` (1 in ${data.step})` : '');
+                })
+                .catch(e => {
+                    document.getElementById('storage_chart_info').textContent = '❌ Query failed';
+                    console.error(e);
+                });
+        }
+
+        // ── Live streaming feed (called from refreshData every 1.5 s) ──────────────
+        function updateChart(d) {
+            if (_chartMode !== 'live') return;
+            const lbl = new Date().toLocaleTimeString();
+            if (tempChart) {
+                const tcArr = Array.isArray(d.tc_temps) ? d.tc_temps : [];
+                const tcOk = Array.isArray(d.tc_oks) ? d.tc_oks : [];
+                const dst = (d.ds_temp !== undefined && d.ds_temp > -999)
+                    ? parseFloat(d.ds_temp) : null;
+                tempChart.data.labels.push(lbl);
+                for (let i = 0; i < 4; i++) {
+                    const v = tcArr[i];
+                    tempChart.data.datasets[i].data.push((tcOk[i] && typeof v === 'number') ? v : null);
+                }
+                tempChart.data.datasets[4].data.push(dst);
+                if (tempChart.data.labels.length > CHART_MAX_PTS) {
+                    tempChart.data.labels.shift();
+                    tempChart.data.datasets.forEach(ds => ds.data.shift());
+                }
+                tempChart.update('none');
+            }
+            /*  When you add sensors later, you simply swap null for the real field — d.tc2_temp, 
+             d.tc3_temp, or whatever name you give them in the Pico JSON */
+
+            if (positionChart) {
+                positionChart.data.labels.push(lbl);
+                positionChart.data.datasets[0].data.push(parseFloat(d.cur_el) || 0);
+                positionChart.data.datasets[1].data.push(parseFloat(d.cur_az) || 0);
+                positionChart.data.datasets[2].data.push(parseFloat(d.el_actual) || 0);
+                positionChart.data.datasets[3].data.push(parseFloat(d.az_actual) || 0);
+                if (positionChart.data.labels.length > CHART_MAX_PTS) {
+                    positionChart.data.labels.shift();
+                    positionChart.data.datasets.forEach(ds => ds.data.shift());
+                }
+                positionChart.update('none');
+            }
+        }
+
+        // ── Date range helpers ─────────────────────────────────────────────────────
+        function _toLocalDTL(d) {
+            const pad = n => String(n).padStart(2, '0');
+            return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        }
+        function setChartRange(preset) {
+            const now = new Date();
+            const from = new Date(now);
+            if (preset === 'live') {
+                _chartMode = 'live';
+                document.getElementById('chart_info').textContent = '▶ Live streaming';
+                // Clear and restart live feed
+                [tempChart, positionChart].forEach(c => {
+                    if (!c) return;
+                    c.data.labels = [];
+                    c.data.datasets.forEach(ds => ds.data = []);
+                    c.update('none');
+                });
+                return;
+            }
+            if (preset === 'hour') from.setHours(from.getHours() - 1);
+            if (preset === 'today') from.setHours(0, 0, 0, 0);
+            if (preset === 'week') from.setDate(from.getDate() - 7);
+            if (preset === 'month') from.setDate(from.getDate() - 30);
+            document.getElementById('chart_from').value = _toLocalDTL(from);
+            document.getElementById('chart_to').value = _toLocalDTL(now);
+            queryCharts();
+        }
+        // ── Historical DB query → both charts ─────────────────────────────────────
+        function _fmtLabel(ts, totalPts) {
+            if (!ts) return '';
+            const d = new Date(ts.replace(' ', 'T'));
+            if (isNaN(d)) return ts;
+            if (totalPts <= 200) {
+                return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            }
+            // Show date + time abbreviated
+            return d.toLocaleString([], {
+                month: 'short', day: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        }
+
+        function _loadHistoricalChart(type, rows) {
+            const total = rows.length;
+            if (type === 'temperature' && tempChart) {
+                const lbls = rows.map(r => _fmtLabel(r.ts, total));
+                tempChart.data.labels = lbls;
+                // DB currently only stores channel 0 (tc_avg) historically — see note below
+                tempChart.data.datasets[0].data = rows.map(r => r.tc_avg != null ? parseFloat(r.tc_avg) : null);
+                tempChart.data.datasets[1].data = rows.map(() => null);
+                tempChart.data.datasets[2].data = rows.map(() => null);
+                tempChart.data.datasets[3].data = rows.map(() => null);
+                tempChart.data.datasets[4].data = rows.map(r =>
+                    (r.ds_temp != null && r.ds_temp > -999) ? parseFloat(r.ds_temp) : null
+                );
+                tempChart.update();
+            }
+            if (type === 'position' && positionChart) {
+                const lbls = rows.map(r => _fmtLabel(r.ts, total));
+                positionChart.data.labels = lbls;
+                positionChart.data.datasets[0].data = rows.map(r => r.cur_el != null ? parseFloat(r.cur_el) : null);
+                positionChart.data.datasets[1].data = rows.map(r => r.cur_az != null ? parseFloat(r.cur_az) : null);
+                positionChart.data.datasets[2].data = rows.map(r => r.el_actual != null ? parseFloat(r.el_actual) : null);
+                positionChart.data.datasets[3].data = rows.map(r => r.az_actual != null ? parseFloat(r.az_actual) : null);
+                positionChart.update();
+            }
+        }
+
+        function queryCharts() {
+            _chartMode = 'historical';
+            const from = document.getElementById('chart_from').value;
+            const to = document.getElementById('chart_to').value;
+            const points = document.getElementById('chart_points').value;
+            if (!from || !to) { alert('Select From and To dates.'); return; }
+
+            // Convert datetime-local (local time) to the format the DB stores (also local)
+            const fromStr = from.replace('T', ' ') + ':00';
+            const toStr = to.replace('T', ' ') + ':59';
+            document.getElementById('chart_info').textContent = '⏳ Loading...';
+
+            // Fetch both chart types in parallel
+            const base = `/api/chart?from=${encodeURIComponent(fromStr)}&to=${encodeURIComponent(toStr)}&points=${points}`;
+            Promise.all([
+                fetch(base + '&type=temperature', { credentials: 'include' }).then(r => r.json()),
+                fetch(base + '&type=position', { credentials: 'include' }).then(r => r.json())
+            ]).then(([tempData, posData]) => {
+                if (tempData.error) { console.error('Temp chart error:', tempData.error); }
+                else { _loadHistoricalChart('temperature', tempData.rows || []); }
+                if (posData.error) { console.error('Pos chart error:', posData.error); }
+                else { _loadHistoricalChart('position', posData.rows || []); }
+                const totalRows = tempData.total || 0;
+                const returned = (tempData.rows || []).length;
+                const step = tempData.step || 1;
+                document.getElementById('chart_info').textContent =
+                    `${returned.toLocaleString()} pts shown / ${totalRows.toLocaleString()} total` +
+                    (step > 1 ? ` (1 in ${step})` : '');
+            }).catch(e => {
+                document.getElementById('chart_info').textContent = '❌ Query failed';
+                console.error(e);
+            });
+        }
+        // =========================================================================
+        //  REFRESH DATA
+        // =========================================================================
+        function refreshData() {
+            fetch('/api/data', { credentials: 'include' }).then(r => r.json()).then(d => {
+                window._lastTelemetry = d;
+                if (d.mode) syncModeFromTelemetry(d.mode);
+                document.getElementById('rtc_clock').innerText = d.rtc_time || "--:--:--";
+                document.getElementById('rtc_date_display').innerText = safe(d.rtc_ok) ? d.rtc_date : "--/--/--";
+                // CURRENT
+                document.getElementById('c_pulse').innerText = safe(d.cur_pulse);
+                document.getElementById('t_pulse').innerText = safe(d.tar_pulse);
+                document.getElementById('act_pulse').innerText = safe(d.act_pulse);
+                document.getElementById('act_target').innerText = safe(d.act_target);
+                document.getElementById('c_az').innerText = safe(d.cur_az).toFixed(1);
+                document.getElementById('c_el').innerText = safe(d.cur_el).toFixed(1);
+                document.getElementById('az_actual').innerText = safe(d.az_actual).toFixed(1);
+                document.getElementById('el_actual').innerText = safe(d.el_actual).toFixed(1);
+                const ds = safe(d.day_start, 0), de = safe(d.day_end, 0);
+                document.getElementById('day_window').innerText = `${String(ds).padStart(2, '0')}:00 / ${String(de).padStart(2, '0')}:00`;
+                document.getElementById('ax').innerText = safe(d.ax).toFixed(3);
+                document.getElementById('ay').innerText = safe(d.ay).toFixed(3);
+                document.getElementById('az_imu').innerText = safe(d.az_imu).toFixed(3);
+                document.getElementById('gx').innerText = safe(d.gx).toFixed(2);
+                document.getElementById('gy').innerText = safe(d.gy).toFixed(2);
+                document.getElementById('gz').innerText = safe(d.gz).toFixed(2);
+                document.getElementById('pitch').innerText = safe(d.pitch).toFixed(2);
+                document.getElementById('roll').innerText = safe(d.roll).toFixed(2);
+                document.getElementById('yaw').innerText = safe(d.yaw).toFixed(2);
+                const elDiff = safe(d.imu_el_diff), vsEnc = safe(d.imu_vs_enc), elAlert = safe(d.imu_el_alert);
+                const elDiffEl = document.getElementById('imu_el_diff');
+                if (elDiffEl) { elDiffEl.innerText = elDiff.toFixed(2); elDiffEl.style.color = Math.abs(elDiff) > 5 ? 'red' : 'green'; }
+                const encAzEl = document.getElementById('imu_enc_az'); if (encAzEl) encAzEl.innerText = safe(d.imu_enc_az).toFixed(2);
+                const vsEncEl = document.getElementById('imu_vs_enc'); if (vsEncEl) { vsEncEl.innerText = vsEnc.toFixed(2); vsEncEl.style.color = Math.abs(vsEnc) > 10 ? 'orange' : 'inherit'; }
+                const ab = document.getElementById('imu_el_alert_badge'); if (ab) ab.style.display = elAlert ? 'block' : 'none';
+                const is = document.getElementById('imu_status_text');
+                if (is) { if (!safe(d.imu_ok)) { is.innerText = 'NOT OK'; is.style.color = 'red'; } else if (safe(d.imu_alarm)) { is.innerText = 'TILT ALARM'; is.style.color = 'red'; } else { is.innerText = 'OK'; is.style.color = 'green'; } }
+                const speed = safe(d.wind_speed), limit = safe(d.wind_limit);
+                document.getElementById('w_speed').innerText = speed.toFixed(1);
+                document.getElementById('w_limit').innerText = limit.toFixed(1);
+                const wEl = document.getElementById('w_speed'), ws = document.getElementById('wind_status');
+                if (speed > limit && limit > 0) { if (wEl) wEl.style.color = "red"; if (ws) { ws.innerText = "⚠ HIGH WIND"; ws.style.color = "red"; } }
+                else if (speed > limit * 0.7 && limit > 0) { if (wEl) wEl.style.color = "orange"; if (ws) { ws.innerText = "⚠ MODERATE"; ws.style.color = "orange"; } }
+                else { if (wEl) wEl.style.color = "green"; if (ws) { ws.innerText = "SAFE"; ws.style.color = "green"; } }
+                document.getElementById('gps_val').innerText = `${safe(d.lat).toFixed(4)}, ${safe(d.lon).toFixed(4)}`;
+                document.getElementById('tc_avg').innerText = safe(d.tc_avg).toFixed(1);
+                document.getElementById('ds_temp').innerText = safe(d.ds_temp).toFixed(1);
+                // ── Thermocouple probe array (9 channels) ──────────────────────────────
+                const tcArr = Array.isArray(d.tc_temps) ? d.tc_temps : [];
+                const tcOkArr = Array.isArray(d.tc_oks) ? d.tc_oks : [];
+                const tcFltArr = Array.isArray(d.tc_faults) ? d.tc_faults : [];
+
+                const setProbe = (idx, elId) => {
+                    const el = document.getElementById(elId);
+                    if (!el) return;
+                    const v = tcArr[idx], ok = tcOkArr[idx];
+                    el.innerText = (v !== undefined && v !== null && ok) ? Number(v).toFixed(1) : "--";
+                };
+                [0, 1, 2, 3, 4, 5, 6, 7, 8].forEach((idx, i) => setProbe(idx, 'tc_p' + (i + 1)));
+
+                const storageDsEl = document.getElementById('storage_ds_temp');
+                if (storageDsEl) storageDsEl.innerText = safe(d.ds_temp).toFixed(1);
+
+                const okCountEl = document.getElementById('tc_ok_count');
+                if (okCountEl) okCountEl.innerText = tcOkArr.filter(v => v).length;
+                const faultCountEl = document.getElementById('tc_fault_count');
+                if (faultCountEl) faultCountEl.innerText = tcFltArr.filter(v => v).length;
+
+                // LEDs now live in Dash 2 (static HTML, ids led_tc_ch0..8)
+                for (let i = 0; i < 9; i++) setLED(`led_tc_ch${i}`, tcOkArr[i] ? 1 : 0);
+
+                updateStorageChart(tcArr);
+                // LEDs
+                setLED("led_rtc", safe(d.rtc_ok)); setLED("led_wind", safe(d.wind_speed) > 0 ? 1 : 0);
+                setLED("led_gps", safe(d.lat) !== 0 ? 1 : 0); setLED("led_temp", safe(d.tc_ok));
+                setLED("led_prox_az", safe(d.prox_az)); setLED("led_prox_el", safe(d.prox_el));
+                setLED("led_el_full", safe(d.el_full)); setLED("led_imu_ok", safe(d.imu_ok));
+                setLED("led_imu_alarm", safe(d.imu_alarm)); setLED("led_wind_cool", safe(d.wind_cool));
+                setLED("led_wind_park_az", safe(d.wind_park_az)); setLED("led_wind_park_el", safe(d.wind_park_el));
+                setLED("led_night_park", safe(d.night_park)); setLED("led_synced", safe(d.synced));
+                setLED("led_ishome", safe(d.ishome)); setLED("led_is_homing", safe(d.is_homing));
+                setLED("led_night_done", safe(d.night_done)); setLED("led_moving_home", safe(d.moving_home));
+                setLED("led_tc_ok", safe(d.tc_ok)); setLED("led_ds_ok", safe(d.ds_ok));
+                setLED("led_tc_fault", safe(d.tc_fault) ? 1 : 0);
+                setLED("led_step_az", safe(d.step_az) !== 0 ? 1 : 0); setLED("led_step_el", safe(d.step_el) !== 0 ? 1 : 0);
+                setLED("led_az_home_miss", safe(d.az_home_miss)); setLED("led_el_home_miss", safe(d.el_home_miss));
+                setLED("led_nudge_cnt", safe(d.nudge_cnt) > 0 ? 1 : 0); setLED("led_el_nudge_cnt", safe(d.el_nudge_cnt) > 0 ? 1 : 0);
+                // 2D Panel targets
+                _tar2dAz = safe(d.az_actual); _tar2dEl = safe(d.el_actual);
+                const dirs = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+                const di = Math.round(_tar2dAz / 22.5) % 16;
+                const lA = document.getElementById('lbl_az3d'); if (lA) lA.innerText = _tar2dAz.toFixed(1) + '°';
+                const lE = document.getElementById('lbl_el3d'); if (lE) lE.innerText = _tar2dEl.toFixed(1) + '°';
+                const lD = document.getElementById('lbl_dir3d'); if (lD) lD.innerText = dirs[di >= 0 ? di : 0];
+                updateChart(d);
+            }).catch(e => console.log("Fetch error:", e));
+        }
+        setInterval(refreshData, 1500);
+
+        // =========================================================================
+        //  NOTIFICATIONS
+        // =========================================================================
+        function refreshNotifications() {
+            fetch('/api/notifications', { credentials: 'include' }).then(r => r.json()).then(data => {
+                const menu = document.getElementById('notif_menu'); if (!menu) return;
+                menu.innerHTML = '<li class="fw-bold mb-2" style="font-size:0.82rem;">Recent Alerts</li>';
+                if (!data.length) { menu.innerHTML += '<li class="small text-muted">No alerts yet</li>'; return; }
+                data.slice().reverse().forEach(n => {
+                    let c = "text-primary"; if (n.level === "danger") c = "text-danger"; if (n.level === "success") c = "text-success";
+                    menu.innerHTML += `<li class="small ${c} mb-1">● [${n.time}] ${n.msg}</li>`;
+                });
+            }).catch(() => { });
+        }
+        setInterval(refreshNotifications, 2000);
+
+        // =========================================================================
+        //  LOGS — SQLite-backed
+        // =========================================================================
+        let telemetryVisible = false;
+        let _activeLogTab = 'all';
+        let _lastLogRows = [];
+        const LOG_MAX_ROWS = 1;
+        let _logBuffer = [];
+
+        function setLogTab(cat, btn) {
+            _activeLogTab = cat;
+            document.querySelectorAll('.log-tab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.log-section').forEach(sec => {
+                const secCat = sec.getAttribute('data-cat');
+                sec.classList.toggle('hidden-section', !(cat === 'all' || secCat === cat));
+            });
+        }
+
+        function _toLocalStr(d) {
+            const pad = n => String(n).padStart(2, '0');
+            return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        }
+
+        function setLogRange(preset) {
+            const now = new Date();
+            const from = new Date(now);
+            if (preset === 'today') from.setHours(0, 0, 0, 0);
+            if (preset === 'week') from.setDate(from.getDate() - 7);
+            if (preset === 'month') from.setDate(from.getDate() - 30);
+            document.getElementById('log_from').value = _toLocalStr(from);
+            document.getElementById('log_to').value = _toLocalStr(now);
+            setTimeout(queryLogs, 50);
+        }
+
+        function queryLogs() {
+            const from = document.getElementById('log_from').value;
+            const to = document.getElementById('log_to').value;
+            const limit = document.getElementById('log_limit').value;
+            const cat = _activeLogTab;
+            const params = new URLSearchParams({ limit, cat });
+
+            if (from) {
+                params.set('from', from.replace('T', ' ') + ':00');
+            } else {
+                const d = new Date(); d.setHours(0, 0, 0, 0);
+                params.set('from', _toLocalStr(d).replace('T', ' ') + ':00');
+            }
+            if (to) {
+                params.set('to', to.replace('T', ' ') + ':59');
+            } else {
+                params.set('to', _toLocalStr(new Date()).replace('T', ' ') + ':59');
+            }
+
+            const countEl = document.getElementById('log_row_count');
+            if (countEl) countEl.textContent = '⏳ Querying...';
+
+            _lastLogRows = [];
+
+            fetch('/api/logs?' + params.toString(), { credentials: 'include' })
+                .then(r => {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.json();
+                })
+                .then(data => {
+                    _lastLogRows = data.rows || [];
+                    if (countEl) countEl.textContent = `${_lastLogRows.length} rows returned`;
+                    if (_lastLogRows.length === 0) {
+                        if (countEl) countEl.textContent = '⚠ 0 rows — check time range or DB';
+                    }
+                    _renderLogTables(_lastLogRows);
+                })
+                .catch(e => {
+                    if (countEl) countEl.textContent = '❌ Query failed: ' + e.message;
+                    console.error('Log query error:', e);
+                });
+        }
+
+        function refreshDbStats() {
+            fetch('/api/logs/stats', { credentials: 'include' })
+                .then(r => r.json())
+                .then(d => {
+                    document.getElementById('db_row_count').textContent =
+                        (d.rows || 0).toLocaleString();
+                    document.getElementById('db_oldest').textContent = d.oldest || '--';
+                    document.getElementById('db_newest').textContent = d.newest || '--';
+                    document.getElementById('db_size').textContent = (d.size_mb || 0) + ' MB';
+                }).catch(() => { });
+        }
+
+        function exportCSV() {
+            if (!_lastLogRows || _lastLogRows.length === 0) {
+                // Auto-query first then export
+                const countEl = document.getElementById('log_row_count');
+                if (countEl) countEl.textContent = '⏳ Loading for export...';
+                const from = document.getElementById('log_from').value;
+                const to = document.getElementById('log_to').value;
+                const limit = document.getElementById('log_limit').value;
+                const cat = _activeLogTab;
+                const params = new URLSearchParams({ limit, cat });
+
+                if (from) params.set('from', from.replace('T', ' ') + ':00');
+                else { const d = new Date(); d.setHours(0, 0, 0, 0); params.set('from', _toLocalStr(d).replace('T', ' ') + ':00'); }
+                if (to) params.set('to', to.replace('T', ' ') + ':59');
+                else params.set('to', _toLocalStr(new Date()).replace('T', ' ') + ':59');
+
+                fetch('/api/logs?' + params.toString(), { credentials: 'include' })
+                    .then(r => r.json())
+                    .then(data => {
+                        _lastLogRows = data.rows || [];
+                        _renderLogTables(_lastLogRows);
+                        if (_lastLogRows.length === 0) {
+                            alert('No data to export in selected range.');
+                            return;
+                        }
+                        _doCSVDownload(_lastLogRows);
+                    })
+                    .catch(e => alert('Export failed: ' + e.message));
+                return;
+            }
+            _doCSVDownload(_lastLogRows);
+        }
+
+        // Separate CSV download helper
+        function _doCSVDownload(rows) {
+            const keys = Object.keys(rows[0]);
+            const lines = [keys.join(',')];
+            rows.forEach(r => {
+                lines.push(keys.map(k => {
+                    const v = r[k] ?? '';
+                    return String(v).includes(',') ? `"${v}"` : v;
+                }).join(','));
+            });
+            const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `solar_logs_${new Date().toISOString().slice(0, 10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+        }
+
+        function _sc(val, tl, fl, tc, fc) {
+            const v = Number(val);
+            return `<td class="${v ? (tc || 'val-ok') : (fc || '')}">${v ? (tl || 'YES') : (fl || 'NO')}</td>`;
+        }
+        function _nc(val, dec) {
+            const v = parseFloat(val);
+            return isNaN(v) ? `<td>--</td>` : `<td class="val-num">${v.toFixed(dec ?? 2)}</td>`;
+        }
+
+        function _renderLogTables(rows) {
+            let pos = '', wind = '', imu = '', therm = '', stor = '', gps = '', sys = '', motor = '';
+            (rows || []).forEach(d => {
+                const t = (d.ts || '').replace('T', ' ');
+                pos += `<tr><td>${t}</td>
+            ${_nc(d.cur_az, 2)}${_nc(d.cur_el, 2)}
+            ${_nc(d.az_actual, 2)}${_nc(d.el_actual, 2)}
+            <td class="val-num">${d.cur_pulse ?? '--'}</td>
+            <td class="val-num">${d.tar_pulse ?? '--'}</td>
+            <td class="${Math.abs(d.az_err) > 5000 ? 'val-warn' : 'val-num'}">${d.az_err ?? '--'}</td>
+            <td class="val-num">${d.act_pulse ?? '--'}</td>
+            <td class="val-num">${d.act_target ?? '--'}</td>
+            <td class="${Math.abs(d.el_err) > 50000 ? 'val-warn' : 'val-num'}">${d.el_err ?? '--'}</td>
+        </tr>`;
+                const ws = parseFloat(d.wind_speed), wt = parseFloat(d.wind_limit);
+                const wCls = ws > wt && wt > 0 ? 'val-err' : ws > wt * 0.7 && wt > 0 ? 'val-warn' : 'val-num';
+                const wLbl = ws > wt && wt > 0 ? 'HIGH' : ws > wt * 0.7 && wt > 0 ? 'MODERATE' : 'SAFE';
+                wind += `<tr><td>${t}</td>
+            <td class="${wCls}">${isNaN(ws) ? '--' : ws.toFixed(2)}</td>
+            ${_nc(d.wind_limit, 2)}
+            <td class="${wCls}">${wLbl}</td>
+            ${_sc(d.wind_park_az, 'PARKED', 'OK', 'val-warn', 'val-ok')}
+            ${_sc(d.wind_park_el, 'PARKED', 'OK', 'val-warn', 'val-ok')}
+            ${_sc(d.wind_cool, 'COOLING', '–', 'val-warn', '')}
+        </tr>`;
+                const elDiff = parseFloat(d.imu_el_diff);
+                imu += `<tr><td>${t}</td>
+            ${_nc(d.pitch, 2)}${_nc(d.roll, 2)}${_nc(d.yaw, 2)}
+            ${_nc(d.ax, 3)}${_nc(d.ay, 3)}${_nc(d.az_imu, 3)}
+            ${_nc(d.gx, 2)}${_nc(d.gy, 2)}${_nc(d.gz, 2)}
+            <td class="${Math.abs(elDiff) > 5 ? 'val-warn' : 'val-num'}">${isNaN(elDiff) ? '--' : elDiff.toFixed(2)}</td>
+            ${_sc(d.imu_el_alert, '⚠ YES', 'NO', 'val-warn', '')}
+            ${_nc(d.imu_enc_az, 2)}${_nc(d.imu_vs_enc, 2)}
+            ${_sc(d.imu_ok, 'OK', 'FAIL', 'val-ok', 'val-err')}
+            ${_sc(d.imu_alarm, '⚠ YES', 'NO', 'val-err', '')}
+        </tr>`;
+                therm += `<tr><td>${t}</td>
+            ${_nc(d.tc_1, 2)}${_nc(d.tc_2, 2)}${_nc(d.tc_3, 2)}${_nc(d.tc_4, 2)}
+            <td class="val-num">${d.ds_temp != null && d.ds_temp > -999 ? parseFloat(d.ds_temp).toFixed(2) : '--'}</td>
+            ${_sc(d.ds_ok, 'OK', 'FAIL', 'val-ok', 'val-err')}
+        </tr>`;
+
+                stor += `<tr><td>${t}</td>
+            ${_nc(d.tc_5, 2)}${_nc(d.tc_6, 2)}${_nc(d.tc_7, 2)}${_nc(d.tc_8, 2)}${_nc(d.tc_9, 2)}
+        </tr>`;
+                gps += `<tr><td>${t}</td>
+            <td>${d.rtc_date ?? '--'}</td><td>${d.rtc_time ?? '--'}</td>
+            ${_sc(d.rtc_ok, 'OK', 'FAIL', 'val-ok', 'val-err')}
+            ${_nc(d.lat, 6)}${_nc(d.lon, 6)}
+            <td>${d.day_start ?? '--'}</td><td>${d.day_end ?? '--'}</td>
+        </tr>`;
+                sys += `<tr><td>${t}</td>
+            <td class="${d.mode === 'manual' ? 'val-warn' : 'val-ok'}">${(d.mode ?? '--').toUpperCase()}</td>
+            ${_sc(d.synced, 'YES', 'NO', 'val-ok', 'val-warn')}
+            ${_sc(d.ishome, 'YES', 'NO', 'val-ok', '')}
+            ${_sc(d.is_homing, 'YES', 'NO', 'val-warn', '')}
+            ${_sc(d.night_park, 'YES', 'NO', 'val-warn', '')}
+            ${_sc(d.night_done, 'YES', 'NO', 'val-ok', '')}
+            ${_sc(d.moving_home, 'YES', 'NO', 'val-warn', '')}
+            ${_sc(d.prox_az, 'HIT', '–', 'val-ok', '')}
+            ${_sc(d.prox_el, 'HIT', '–', 'val-ok', '')}
+            ${_sc(d.el_full, 'FULL', '–', 'val-warn', '')}
+            ${_sc(d.az_home_miss, 'MISS', 'OK', 'val-err', '')}
+            ${_sc(d.el_home_miss, 'MISS', 'OK', 'val-err', '')}
+            <td class="${(d.nudge_cnt ?? 0) > 0 ? 'val-warn' : ''}">${d.nudge_cnt ?? 0}</td>
+            <td class="${(d.el_nudge_cnt ?? 0) > 0 ? 'val-warn' : ''}">${d.el_nudge_cnt ?? 0}</td>
+            ${_sc(d.az_fault, 'FAULT', 'OK', 'val-err', '')}
+        </tr>`;
+                motor += `<tr><td>${t}</td>
+            <td class="${(d.step_az ?? 0) !== 0 ? 'val-warn' : ''}">${d.step_az ?? 0}</td>
+            <td class="${(d.step_el ?? 0) !== 0 ? 'val-warn' : ''}">${d.step_el ?? 0}</td>
+            ${_sc(d.az_fault, 'FAULT', 'OK', 'val-err', '')}
+            ${_sc(d.wind_park_az, 'PARKED', 'OK', 'val-warn', 'val-ok')}
+            ${_sc(d.wind_park_el, 'PARKED', 'OK', 'val-warn', 'val-ok')}
+            ${_sc(d.wind_cool, 'COOLING', '–', 'val-warn', '')}
+        </tr>`;
+            });
+            const empty = n =>
+                `<tr><td colspan="${n}" style="text-align:center;color:#bbb;padding:12px;">No data — use Query above</td></tr>`;
+            document.getElementById('log_tbody_position').innerHTML = pos || empty(11);
+            document.getElementById('log_tbody_wind').innerHTML = wind || empty(7);
+            document.getElementById('log_tbody_imu').innerHTML = imu || empty(16);
+            document.getElementById('log_tbody_thermal').innerHTML = therm || empty(7);
+            document.getElementById('log_tbody_storage').innerHTML = stor || empty(6);
+            document.getElementById('log_tbody_gps').innerHTML = gps || empty(8);
+            document.getElementById('log_tbody_system').innerHTML = sys || empty(16);
+            document.getElementById('log_tbody_motor').innerHTML = motor || empty(7);
+        }
+
+        // Refresh DB stats every 30 s while on log tab
+        setInterval(() => { if (telemetryVisible) refreshDbStats(); }, 30000);
+
+        // =========================================================================
+        //  NAV
+        // =========================================================================
+        function switchDash(id, el) {
+            if (id === 4 && !["Administrator", "Operator"].includes(window._userRole)) {
+                alert("❌ Access Denied — Operator or Admin role required.");
+                return;
+            }
+            document.querySelectorAll('.dash-view').forEach(v => v.classList.add('hidden'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('dash' + id).classList.remove('hidden');
+            el.classList.add('active');
+            telemetryVisible = (id === 5);
+            if (id === 3 && !tempChart) {
+                initChart();
+            }
+            if (id === 6 && !storageChart) {
+                initStorageChart();
+            }
+            if (id === 3) {
+                // Default to live on first open; don't reset if already viewing historical
+                if (_chartMode === 'live') setChartRange('live');
+            }
+            if (id === 5) {
+                setLogRange('today');
+                refreshDbStats();
+            }
+            if (document.getElementById("sidebar").classList.contains("open")) toggleSidebar();
+        }
+        function openPanel(name) {
+            document.getElementById("manualMenu").style.display = "none";
+            document.querySelectorAll('[id^="panel_"]').forEach(p => p.classList.add("hidden"));
+            document.getElementById("panel_" + name).classList.remove("hidden");
+            if (name === 'rtc') {
+                const ld = window._lastTelemetry || {};
+                const ds = (ld.rtc_date || new Date().toISOString().split('T')[0]).split('-');
+                const ts = (ld.rtc_time || '00:00:00').split(':');
+                const y = parseInt(ds[0]) || 2025, mo = parseInt(ds[1]) || 1, d = parseInt(ds[2]) || 1;
+                const h = parseInt(ts[0]) || 0, mi = parseInt(ts[1]) || 0, s = parseInt(ts[2]) || 0;
+                document.getElementById('rtc_year_val').value = y; document.getElementById('rtc_month_val').value = mo; document.getElementById('rtc_day_val').value = d;
+                document.getElementById('rtc_hour_val').value = h; document.getElementById('rtc_minute_val').value = mi; document.getElementById('rtc_second_val').value = s;
+                document.getElementById('rtc_year_display').innerText = String(y);
+                document.getElementById('rtc_month_display').innerText = String(mo).padStart(2, '0');
+                document.getElementById('rtc_day_display').innerText = String(d).padStart(2, '0');
+                document.getElementById('rtc_hour_display').innerText = String(h).padStart(2, '0');
+                document.getElementById('rtc_minute_display').innerText = String(mi).padStart(2, '0');
+                document.getElementById('rtc_second_display').innerText = String(s).padStart(2, '0');
+            }
+            if (name === 'gps') {
+                const ld = window._lastTelemetry || {};
+                if (ld.lat) document.getElementById('lat_input').value = ld.lat.toFixed(6);
+                if (ld.lon) document.getElementById('lon_input').value = ld.lon.toFixed(6);
+                const sel = document.getElementById('tz_select'), cur = ld.tz !== undefined ? ld.tz : 5.5;
+                if (sel) { let best = 0, bd = Infinity; for (let i = 0; i < sel.options.length; i++) { const diff = Math.abs(parseFloat(sel.options[i].value) - cur); if (diff < bd) { bd = diff; best = i; } } sel.selectedIndex = best; }
+            }
+            if (name === 'sun') {
+                const ld = window._lastTelemetry || {};
+                const sr = ld.day_start !== undefined ? ld.day_start : 6, ss = ld.day_end !== undefined ? ld.day_end : 19;
+                document.getElementById('sunrise_hour').value = sr; document.getElementById('sunset_hour').value = ss;
+                const sd = document.getElementById('sunrise_display'); if (sd) sd.innerText = String(sr).padStart(2, '0');
+                const sed = document.getElementById('sunset_display'); if (sed) sed.innerText = String(ss).padStart(2, '0');
+            }
+            if (name === 'calib') openCalibPanel();
+        }
+        function goBack() {
+            document.getElementById("manualMenu").style.display = "block";
+            document.querySelectorAll('[id^="panel_"]').forEach(p => p.classList.add("hidden"));
+        }
+
+        // =========================================================================
+        //  PROFILE
+        // =========================================================================
+        // function saveProfile() {
+        //     const ex = JSON.parse(localStorage.getItem('svr_profiles') || '{}');
+        //     if (Object.keys(ex).length >= 5) { alert("⚠ 5 profile limit reached."); return; }
+        //     const uid = document.getElementById('new_userid').value.trim().toLowerCase().replace(/\s+/g, '');
+        //     const name = document.getElementById('new_name').value.trim();
+        //     const email = document.getElementById('new_email').value.trim();
+        //     const role = document.getElementById('new_role').value;
+        //     const file = document.getElementById('profile_photo').files[0];
+        //     const np = document.getElementById('new_pass').value;
+        //     const cp = document.getElementById('confirm_pass').value;
+        //     if (!uid) { alert("Enter User ID"); return; }
+        //     if (!name || !email) { alert("Fill all fields"); return; }
+        //     if (!np) { alert("Enter password"); return; }
+        //     if (np !== cp) { alert("Passwords don't match"); return; }
+        //     if (["admin", "operator", "viewer"].includes(uid)) { alert("Cannot overwrite built-in account"); return; }
+        //     if (USERS[uid]) { alert(`"${uid}" exists`); return; }
+        //     const saved = JSON.parse(localStorage.getItem('svr_profiles') || '{}');
+        //     saved[uid] = np; localStorage.setItem('svr_profiles', JSON.stringify(saved));
+        //     const meta = JSON.parse(localStorage.getItem('svr_profile_meta') || '{}');
+        //     meta[uid] = { name, email, role, pos: role }; localStorage.setItem('svr_profile_meta', JSON.stringify(meta));
+        //     USERS = loadUsers();
+        //     if (file) { const r = new FileReader(); r.onload = e => { const av = JSON.parse(localStorage.getItem('svr_avatars') || '{}'); av[uid] = e.target.result; localStorage.setItem('svr_avatars', JSON.stringify(av)); document.getElementById("header_avatar").src = e.target.result; }; r.readAsDataURL(file); }
+        //     else { document.getElementById("header_avatar").src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=f39221&color=fff`; }
+        //     document.getElementById('profile_name').innerText = name;
+        //     document.getElementById('profile_email').innerText = email;
+        //     document.getElementById('profile_pos').innerText = role;
+        //     document.getElementById('profile_role_sub').innerText = role;
+        //     const modal = bootstrap.Modal.getInstance(document.getElementById('profileModal')) || new bootstrap.Modal(document.getElementById('profileModal'));
+        //     modal.hide();
+        //     alert(`Profile created!\nID: ${uid}\nPass: ${np}\n\nSave these!`);
+        // } 
+
+        // =========================================================================
+        //  2D SOLAR PANEL
+        // =========================================================================
+        let _cur2dAz = 0, _cur2dEl = 45, _tar2dAz = 0, _tar2dEl = 45;
+
+        function animate2D() {
+            _cur2dAz += (_tar2dAz - _cur2dAz) * 0.06;
+            _cur2dEl += (_tar2dEl - _cur2dEl) * 0.06;
+            const pivot = document.getElementById('panel-pivot');
+            const psvg = document.getElementById('panel-svg');
+            const shadow = document.getElementById('solar2d-shadow');
+            if (pivot) pivot.style.transform = `rotate(${_cur2dAz}deg)`;
+            if (psvg) { const scaleY = Math.max(0.08, Math.sin(_cur2dEl * Math.PI / 180)); psvg.style.transform = `translate(-50%,-50%) scaleY(${scaleY})`; }
+            if (shadow) { const scaleY = Math.max(0.08, Math.sin(_cur2dEl * Math.PI / 180)); const sw = 40 + 30 * (1 - scaleY); const ox = Math.sin(_cur2dAz * Math.PI / 180) * 8; shadow.style.width = sw + 'px'; shadow.style.marginLeft = (-sw / 2 + ox) + 'px'; }
+            requestAnimationFrame(animate2D);
+        }
+        animate2D();
+
+        // =========================================================================
+        //  INIT
+        // =========================================================================
+        window.addEventListener("load", () => {
+            refreshData();
+            refreshNotifications();
+            document.getElementById('profileModal').addEventListener('show.bs.modal', updateProfileSlotCount);
+        });
+
+        // ── Fix datetime-local scroll on touch devices ────────────────────────────
+        document.querySelectorAll('input[type="datetime-local"]').forEach(input => {
+            input.addEventListener('touchstart', e => e.stopPropagation(), { passive: true });
+            input.addEventListener('touchmove', e => e.stopPropagation(), { passive: true });
+        });
+
+        // Re-apply after switchDash since new inputs may appear
+        const _origSwitchDash = switchDash;
+        window.switchDash = function (id, el) {
+            _origSwitchDash(id, el);
+            setTimeout(() => {
+                document.querySelectorAll('input[type="datetime-local"]').forEach(input => {
+                    input.addEventListener('touchstart', e => e.stopPropagation(), { passive: true });
+                    input.addEventListener('touchmove', e => e.stopPropagation(), { passive: true });
+                });
+            }, 100);
+        };
+        function nudgeTime(inputId, direction) {
+            const input = document.getElementById(inputId);
+            if (!input.value) {
+                const now = new Date();
+                const pad = n => String(n).padStart(2, '0');
+                input.value = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+            }
+            const d = new Date(input.value);
+            d.setMinutes(d.getMinutes() + (direction * 15));
+            const pad = n => String(n).padStart(2, '0');
+            input.value = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        }
+    </script>
+</body>
+
+</html>
