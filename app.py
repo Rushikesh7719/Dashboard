@@ -16,7 +16,6 @@ import secrets
 PICO_PORT = "/dev/ttyACM0"
 PICO_BAUD = 115200
 
-# DB_PATH = "/home/pi/solar_dash/new_code/Dashboard/logs/telemetry.db"
 DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs", "telemetry.db")
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.secret_key = secrets.token_hex(32)
